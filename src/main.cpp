@@ -10,4 +10,8 @@
 int main(int argc, char *argv[]) {
     std::cout << "Welcome to " << argv[0] << "\n";
     auto phoneBook = parse(argv[1]);
+
+    phoneBook.print_origin_by_blood(PersonID{"Q54058"});
+    phoneBook.print_origin_by_blood(PersonID{"Q53449"});
+
 }
