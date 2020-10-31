@@ -13,5 +13,4 @@ int main(int argc, char *argv[]) {
 
     phoneBook.print_origin_by_blood(PersonID{"Q54058"});
     phoneBook.print_origin_by_blood(PersonID{"Q53449"});
-
 }

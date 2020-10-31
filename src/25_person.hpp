@@ -8,17 +8,16 @@ struct PersonID {
 };
 
 namespace std {
-  template <>
-  struct hash<PersonID> {
-    std::size_t operator()(const PersonID& k) const {
-      using std::size_t;
-      using std::hash;
-      using std::string;
+template <> struct hash<PersonID> {
+    std::size_t operator()(const PersonID &k) const {
+        using std::hash;
+        using std::size_t;
+        using std::string;
 
-      return (hash<string>()(k.value));
+        return (hash<string>()(k.value));
     }
-  };
-}
+};
+} // namespace std
 
 bool operator==(const PersonID &lhs, const PersonID &rhs) {
     return (lhs.value == rhs.value);
@@ -35,4 +34,3 @@ struct Person {
     std::optional<PersonID> father{};
     std::optional<PersonID> mother{};
 };
-

@@ -8,16 +8,16 @@
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
-        return !std::isspace(ch);
-    }));
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+                                    [](int ch) { return !std::isspace(ch); }));
 }
 
 // trim from end (in place)
 static inline void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+    s.erase(std::find_if(s.rbegin(), s.rend(),
+                         [](int ch) { return !std::isspace(ch); })
+                .base(),
+            s.end());
 }
 
 // trim from both ends (in place)
@@ -57,7 +57,8 @@ auto load_file(std::string path) -> std::string {
 }
 
 // https://stackoverflow.com/a/13172579
-auto load_file_to_vector_of_lines(std::string path) -> std::vector<std::string> {
+auto load_file_to_vector_of_lines(std::string path)
+    -> std::vector<std::string> {
     std::ifstream inFile;
     inFile.open(path);
 
@@ -66,7 +67,7 @@ auto load_file_to_vector_of_lines(std::string path) -> std::vector<std::string> 
     std::string to;
 
     std::vector<std::string> res{};
-    while(std::getline(strStream,to,'\n')){
+    while (std::getline(strStream, to, '\n')) {
         res.push_back(to);
     }
     return res;

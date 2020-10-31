@@ -23,12 +23,14 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
         res[hashmap[id].country] = 1.0;
     } else {
         if (contains(father)) {
-            for (const auto&[key, value] : origin_by_blood(father.value())) {
+            for (const auto & [ key, value ] :
+                 origin_by_blood(father.value())) {
                 res[key] += 0.5 * value;
             }
         }
         if (contains(mother)) {
-            for (const auto&[key, value] : origin_by_blood(mother.value())) {
+            for (const auto & [ key, value ] :
+                 origin_by_blood(mother.value())) {
                 res[key] += 0.5 * value;
             }
         }
@@ -39,12 +41,12 @@ void PhoneBook::print_origin_by_blood(PersonID id) {
     auto res = origin_by_blood(id);
     std::cout << "<< ORIGIN BY BLOOD >>\n";
     std::cout << hashmap[id].name << "\n";
-    for (const auto&[key, value] : res) {
+    for (const auto & [ key, value ] : res) {
         if (key != "Unknown") {
             std::cout << "  " << key << " " << value << "\n";
         }
     }
-        std::cout << "\n";
+    std::cout << "\n";
 }
 
 PhoneBook parse(std::string filepath) {
@@ -52,8 +54,7 @@ PhoneBook parse(std::string filepath) {
     auto database = load_file_to_vector_of_lines(filepath);
     for (auto &line : database) {
         if (line.find(std::string{':'}) != std::string::npos) {
-            std::cout << " [INFO] Found a record:          "
-                      << line << "\n";
+            std::cout << " [INFO] Found a record:          " << line << "\n";
             std::string id = line.substr(0, line.find(std::string{":"}));
             line = line.substr(line.find(std::string{":"}) + 1);
             std::string name = line.substr(0, line.find(std::string{":"}));
@@ -70,8 +71,7 @@ PhoneBook parse(std::string filepath) {
             res.hashmap[person.id] = person;
 
         } else if (line.find(std::string{'='}) != std::string::npos) {
-            std::cout << " [INFO] Found parents:           "
-                      << line << "\n";
+            std::cout << " [INFO] Found parents:           " << line << "\n";
             std::string id = line.substr(0, line.find(std::string{"="}));
             line = line.substr(line.find(std::string{"="}) + 1);
             std::string father = line.substr(0, line.find(std::string{"+"}));
@@ -91,8 +91,7 @@ PhoneBook parse(std::string filepath) {
             }
 
         } else {
-            std::cout << " [INFO] This line is not parsed: "
-                      << line << "\n";
+            std::cout << " [INFO] This line is not parsed: " << line << "\n";
         }
     }
     return res;
