@@ -7,6 +7,7 @@ struct PersonID {
     std::string value{};
 };
 
+// https://stackoverflow.com/a/17017281
 namespace std {
 template <> struct hash<PersonID> {
     std::size_t operator()(const PersonID &k) const {
