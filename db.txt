@@ -1,0 +1,23 @@
+Q53459 : Casimir IV Jagiellon : Poland
+Q93408 : Elisabeth of Habsburg : Austria
+Q54056 : Sigismund I the Old : Poland
+Q229434 : Bona Sforza : Italy
+Q54058 : Sigismund II Augustus : Poland
+Q314514 : Gian Galeazzo Sforza : Italy
+Q1799532 : Isabella of Naples : Italy
+Q53449 : Jadwiga of Poland : Unknown
+Q53998 : Louis I of Hungary : Unknown
+Q231166 : Elizabeth of Bosnia : Unknown
+Q965795 : Stephen II, Ban of Bosnia : Bosnia
+Q845131 : Elizabeth of Kuyavia : Poland
+Q1734970 : Casimir II of Kuyavia : Poland
+Q213061 : Charles I of Hungary : Unknown
+Q242825 : Elizabeth of Poland, Queen of Hungary : Poland
+
+Q54056 = Q53459 + Q93408
+Q54058 = Q54056 + Q229434
+Q229434 = Q314514 + Q1799532
+Q53449 = Q53998 + Q231166
+Q231166 = Q965795 + Q845131
+Q845131 = Q1734970 + NN
+Q53998 = Q213061 + Q242825
