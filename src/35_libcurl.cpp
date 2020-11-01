@@ -57,9 +57,9 @@ std::optional<std::string> get_via_libcurl(std::string url) {
 
     if (httpCode == 200) {
         std::string tmp{*httpData};
-        free(httpData);
+        delete httpData;
         return tmp;
     }
-    free(httpData);
+    delete httpData;
     return {};
 }

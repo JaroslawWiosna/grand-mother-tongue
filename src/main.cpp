@@ -57,6 +57,7 @@ std::string extract_p22_or_p25(std::string content) {
     std::cout << value->string << "\n";
 
     std::string res{value->string};
+    free(root);
     delete[] json;
     return res;
 }
