@@ -5,25 +5,20 @@
 #include <memory>
 #include <iostream>
 
-namespace
-{
-    std::size_t callback(
-            const char* in,
-            std::size_t size,
-            std::size_t num,
-            std::string* out)
-    {
-        const std::size_t totalBytes(size * num);
-        out->append(in, totalBytes);
-        return totalBytes;
-    }
+namespace {
+std::size_t callback(const char *in, std::size_t size, std::size_t num,
+                     std::string *out) {
+    const std::size_t totalBytes(size * num);
+    out->append(in, totalBytes);
+    return totalBytes;
 }
+} // namespace
 
 std::optional<std::string> get_via_libcurl(std::string url) {
     char url_cstr[1024] = {0};
     sprintf(url_cstr, "%s", url.c_str());
 
-    CURL* curl = curl_easy_init();
+    CURL *curl = curl_easy_init();
 
     // Set remote URL.
     curl_easy_setopt(curl, CURLOPT_URL, url_cstr);
@@ -39,7 +34,7 @@ std::optional<std::string> get_via_libcurl(std::string url) {
 
     // Response information.
     int httpCode{0};
-//    std::shared_ptr<std::string> httpData(new std::string());
+    //    std::shared_ptr<std::string> httpData(new std::string());
     std::string *httpData = new std::string{};
 
     // Hook up data handling function.
