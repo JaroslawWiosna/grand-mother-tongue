@@ -1,8 +1,8 @@
+#include "29_libcurl_and_json.hpp"
 #include "30_phone_book.hpp"
 
 #include "01_utils.hpp"
 
-#include <iostream>
 
 bool PhoneBook::contains(PersonID id) {
     return (hashmap.end() != hashmap.find(id));
@@ -40,7 +40,7 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
 void PhoneBook::print_origin_by_blood(PersonID id) {
     auto res = origin_by_blood(id);
     std::cout << "<< ORIGIN BY BLOOD >>\n";
-    std::cout << hashmap[id].name << "\n";
+    std::cout << hashmap[id].name.value_or("NN") << "\n";
     for (const auto & [ key, value ] : res) {
         if (key != "Unknown") {
             std::cout << "  " << key << " " << value << "\n";
@@ -83,8 +83,16 @@ PhoneBook parse(std::string filepath) {
 
             auto search = res.hashmap.find(PersonID{id});
             if (search != res.hashmap.end()) {
-                search->second.father = PersonID{father};
-                search->second.mother = PersonID{mother};
+                if (father == "NN" || father.empty()) {
+                    search->second.father = {};
+                } else {
+                    search->second.father = PersonID{father};
+                }
+                if (mother == "NN" || mother.empty()) {
+                    search->second.mother = {};
+                } else {
+                    search->second.mother = PersonID{mother};
+                }
             } else {
                 std::cout << "Not found\n";
                 exit(1);
@@ -95,4 +103,82 @@ PhoneBook parse(std::string filepath) {
         }
     }
     return res;
+}
+
+void PhoneBook::find_names_in_wikidata() {
+    for (auto & [ key, value ] : hashmap) {
+        if (not value.name.has_value()) {
+            value.name = get_name(key);
+            std::cout << "[FOUND NAME] " << value.name.value_or("NN") << "\n";
+        }
+    }
+}
+
+// returns true if at least one parent was found
+// return false if no parent was found
+bool PhoneBook::find_parents_in_wikidata() {
+    bool result = {};
+    std::unordered_map<PersonID, Person> new_parents{};
+    for (const auto & [ key, value ] : hashmap) {
+        if (not hashmap[key].father.has_value()) {
+            auto father = get_father(key);
+            if (father.has_value()) {
+                new_parents[key].father = father;
+                result = true;
+                std::cout << key.value << "'s father is "
+                          << father.value().value << "\n";
+            }
+        }
+        if (not hashmap[key].mother.has_value()) {
+            auto mother = get_mother(key);
+            if (mother.has_value()) {
+                new_parents[key].mother = mother;
+                result = true;
+                std::cout << key.value << "'s mother is "
+                          << mother.value().value << "\n";
+            }
+        }
+    }
+    if (result == true) {
+        for (const auto & [ key, value ] : new_parents) {
+            if (not hashmap[key].father.has_value()) {
+                hashmap[key].father = value.father;
+                std::cout << "[ADD FATHER] " << key.value << "'s father is "
+                          << value.father.value().value << "\n";
+            }
+            if (not hashmap[key].mother.has_value()) {
+                hashmap[key].mother = value.mother;
+                std::cout << "[ADD MOTHER] " << key.value << "'s mother is "
+                          << value.mother.value().value << "\n";
+            }
+            if (not contains(value.father)) {
+                hashmap[value.father.value()] = Person{};
+                std::cout << "[ADD NEW] " << value.father.value().value << "\n";
+            }
+            if (not contains(value.mother)) {
+                hashmap[value.mother.value()] = Person{};
+                std::cout << "[ADD NEW] " << value.mother.value().value << "\n";
+            }
+        }
+    }
+    return result;
+}
+
+void PhoneBook::dump(std::string filepath) {
+    std::ofstream f;
+    f.open(filepath);
+    for (const auto & [ key, value ] : hashmap) {
+        f << key.value << " : " << value.name.value_or("NN") << " : "
+          << value.country << "\n";
+    }
+    f << "\n";
+    for (const auto & [ key, value ] : hashmap) {
+        f << key.value << " = "
+          << (value.father.has_value() ? value.father.value().value : "NN")
+          << " + "
+          << (value.mother.has_value() ? value.mother.value().value : "NN")
+          << "\n";
+    }
+
+    f.close();
 }

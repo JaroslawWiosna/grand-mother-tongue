@@ -43,16 +43,16 @@ std::optional<std::string> get_via_libcurl(std::string url) {
     // Hook up data container (will be passed as the last parameter to the
     // callback handling function).  Can be any pointer type, since it will
     // internally be passed as a void pointer.
-    std::cout << "httpData == " << *httpData << "\n";
+    // std::cout << "httpData == " << *httpData << "\n";
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData);
-    std::cout << "httpData == " << *httpData << "\n";
+    // std::cout << "httpData == " << *httpData << "\n";
 
     // Run our HTTP GET command, capture the HTTP response code, and clean up.
-    std::cout << "httpData == " << *httpData << "\n";
+    // std::cout << "httpData == " << *httpData << "\n";
     curl_easy_perform(curl);
-    std::cout << "httpData == " << *httpData << "\n";
+    // std::cout << "httpData == " << *httpData << "\n";
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    std::cout << "httpData == " << *httpData << "\n";
+    // std::cout << "httpData == " << *httpData << "\n";
     curl_easy_cleanup(curl);
 
     if (httpCode == 200) {

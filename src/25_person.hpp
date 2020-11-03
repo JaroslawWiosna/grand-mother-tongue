@@ -30,7 +30,7 @@ bool operator!=(const PersonID &lhs, const PersonID &rhs) {
 
 struct Person {
     PersonID id{};
-    std::string name{};
+    std::optional<std::string> name{};
     std::string country{};
     std::optional<PersonID> father{};
     std::optional<PersonID> mother{};
