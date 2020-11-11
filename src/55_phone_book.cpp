@@ -106,9 +106,24 @@ PhoneBook parse(std::string filepath) {
 }
 
 void PhoneBook::find_names_in_wikidata() {
+    RestApiUrlRequests reqs{};
+    for (const auto & [ key, value ] : hashmap) {
+        if (not value.name.has_value()) {
+            reqs.emplace_back(RestApiUrlRequest{url_of_get_name(key)});
+            // value.name = get_name(key);
+        }
+    }
+    auto resps = request(reqs);
     for (auto & [ key, value ] : hashmap) {
         if (not value.name.has_value()) {
-            value.name = get_name(key);
+            std::string url_of_get_nam = url_of_get_name(key);
+            auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nam == r.url;});
+            if (it != resps.end()) {
+                auto result = extract_name((*it).res.value());
+                if (result.has_value()) {
+                    value.name = result.value();
+                }
+            }
             std::cout << "[FOUND NAME] " << value.name.value_or("NN") << "\n";
         }
     }
@@ -123,24 +138,10 @@ bool PhoneBook::find_parents_in_wikidata() {
     RestApiUrlRequests reqs{};
     for (const auto & [ key, value ] : hashmap) {
         if (not hashmap[key].father.has_value()) {
-            reqs.push_back(RestApiUrlRequest{url_of_get_father(key)});
-            // auto father = get_father(key);
-            // if (father.has_value()) {
-            //     new_parents[key].father = father;
-            //     result = true;
-            //     std::cout << key.value << "'s father is "
-            //               << father.value().value << "\n";
-            // }
+            reqs.emplace_back(RestApiUrlRequest{url_of_get_father(key)});
         }
         if (not hashmap[key].mother.has_value()) {
-            reqs.push_back(RestApiUrlRequest{url_of_get_mother(key)});
-            // auto mother = get_mother(key);
-            // if (mother.has_value()) {
-            //     new_parents[key].mother = mother;
-            //     result = true;
-            //     std::cout << key.value << "'s mother is "
-            //               << mother.value().value << "\n";
-            // }
+            reqs.emplace_back(RestApiUrlRequest{url_of_get_mother(key)});
         }
     }
     auto resps = request(reqs);
