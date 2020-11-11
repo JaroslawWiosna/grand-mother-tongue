@@ -117,28 +117,56 @@ void PhoneBook::find_names_in_wikidata() {
 // returns true if at least one parent was found
 // return false if no parent was found
 bool PhoneBook::find_parents_in_wikidata() {
-    bool result = {};
+    bool result = {true};
     std::unordered_map<PersonID, Person> new_parents{};
+    char buf[512] = {0};
+    RestApiUrlRequests reqs{};
     for (const auto & [ key, value ] : hashmap) {
         if (not hashmap[key].father.has_value()) {
-            auto father = get_father(key);
-            if (father.has_value()) {
-                new_parents[key].father = father;
-                result = true;
-                std::cout << key.value << "'s father is "
-                          << father.value().value << "\n";
+            reqs.push_back(RestApiUrlRequest{url_of_get_father(key)});
+            // auto father = get_father(key);
+            // if (father.has_value()) {
+            //     new_parents[key].father = father;
+            //     result = true;
+            //     std::cout << key.value << "'s father is "
+            //               << father.value().value << "\n";
+            // }
+        }
+        if (not hashmap[key].mother.has_value()) {
+            reqs.push_back(RestApiUrlRequest{url_of_get_mother(key)});
+            // auto mother = get_mother(key);
+            // if (mother.has_value()) {
+            //     new_parents[key].mother = mother;
+            //     result = true;
+            //     std::cout << key.value << "'s mother is "
+            //               << mother.value().value << "\n";
+            // }
+        }
+    }
+    auto resps = request(reqs);
+    for (const auto & [ key, value ] : hashmap) {
+        if (not hashmap[key].father.has_value()) {
+            std::string url_of_get_fathe = url_of_get_father(key);
+            auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_fathe == r.url;});
+            if (it != resps.end()) {
+                auto result = extract_p22_or_p25((*it).res.value());
+                if (result.has_value() && result.value()[0] == 'Q') {
+                    new_parents[key].father = PersonID{result.value()};
+                }
             }
         }
         if (not hashmap[key].mother.has_value()) {
-            auto mother = get_mother(key);
-            if (mother.has_value()) {
-                new_parents[key].mother = mother;
-                result = true;
-                std::cout << key.value << "'s mother is "
-                          << mother.value().value << "\n";
+            std::string url_of_get_mothe = url_of_get_mother(key);
+            auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_mothe == r.url;});
+            if (it != resps.end()) {
+                auto result = extract_p22_or_p25((*it).res.value());
+                if (result.has_value() && result.value()[0] == 'Q') {
+                    new_parents[key].mother = PersonID{result.value()};
+                }
             }
         }
-    }
+    }   
+
     if (result == true) {
         for (const auto & [ key, value ] : new_parents) {
             if (not hashmap[key].father.has_value()) {

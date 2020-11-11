@@ -162,3 +162,30 @@ std::optional<std::string> get_name(PersonID key) {
 #endif
     return extract_name(content.value());
 }
+
+//
+
+std::string url_of_get_father(PersonID key) {
+    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
+    result += key.value;
+    result += "&property=";
+    result += "P22";
+    return result;
+}
+
+std::string url_of_get_mother(PersonID key) {
+    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
+    result += key.value;
+    result += "&property=";
+    result += "P25";
+    return result;
+}
+
+std::string url_of_get_name(PersonID key) {
+    std::string result = {"https://www.wikidata.org/w/"};
+    result += "api.php?action=wbsearchentities&search=";
+    result += key.value;
+    result += "&language=en&format=json";
+    return result;
+}
+
