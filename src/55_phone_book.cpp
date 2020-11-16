@@ -171,22 +171,30 @@ bool PhoneBook::find_parents_in_wikidata() {
     if (result == true) {
         for (const auto & [ key, value ] : new_parents) {
             if (not hashmap[key].father.has_value()) {
-                hashmap[key].father = value.father;
-                std::cout << "[ADD FATHER] " << key.value << "'s father is "
+                if (value.father.has_value()) {
+                    hashmap[key].father = value.father;
+                    std::cout << "[ADD FATHER] " << key.value << "'s father is "
                           << value.father.value().value << "\n";
+                }
             }
             if (not hashmap[key].mother.has_value()) {
-                hashmap[key].mother = value.mother;
-                std::cout << "[ADD MOTHER] " << key.value << "'s mother is "
-                          << value.mother.value().value << "\n";
+                if (value.mother.has_value()) {
+                    hashmap[key].mother = value.mother;
+                    std::cout << "[ADD MOTHER] " << key.value << "'s mother is "
+                            << value.mother.value().value << "\n";
+                }
             }
             if (not contains(value.father)) {
-                hashmap[value.father.value()] = Person{};
-                std::cout << "[ADD NEW] " << value.father.value().value << "\n";
+                if (value.father.has_value()) {
+                    hashmap[value.father.value()] = Person{};
+                    std::cout << "[ADD NEW] " << value.father.value().value << "\n";
+                }
             }
             if (not contains(value.mother)) {
-                hashmap[value.mother.value()] = Person{};
-                std::cout << "[ADD NEW] " << value.mother.value().value << "\n";
+                if (value.mother.has_value()) {
+                    hashmap[value.mother.value()] = Person{};
+                    std::cout << "[ADD NEW] " << value.mother.value().value << "\n";
+                }
             }
         }
     }

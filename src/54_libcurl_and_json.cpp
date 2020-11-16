@@ -188,4 +188,3 @@ std::string url_of_get_name(PersonID key) {
     result += "&language=en&format=json";
     return result;
 }
-
