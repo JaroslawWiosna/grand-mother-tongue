@@ -146,6 +146,9 @@ bool PhoneBook::find_parents_in_wikidata() {
     }
     auto resps = request(reqs);
     for (const auto & [ key, value ] : hashmap) {
+        if (key == PersonID{"UN"}) {
+            continue;
+        }
         if (not hashmap[key].father.has_value()) {
             std::string url_of_get_fathe = url_of_get_father(key);
             auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_fathe == r.url;});
@@ -170,6 +173,9 @@ bool PhoneBook::find_parents_in_wikidata() {
 
     if (result == true) {
         for (const auto & [ key, value ] : new_parents) {
+            if (key == PersonID{"UN"}) {
+                continue;
+            }
             if (not hashmap[key].father.has_value()) {
                 if (value.father.has_value()) {
                     hashmap[key].father = value.father;
