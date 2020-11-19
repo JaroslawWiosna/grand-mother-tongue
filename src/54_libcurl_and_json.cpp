@@ -14,6 +14,7 @@ std::optional<std::string> extract_p22_or_p25(std::string content) {
     memcpy(json, content.c_str(), content.size());
 
     struct json_value_s *root = json_parse(json, strlen(json));
+    assert(root != NULL);
     struct json_object_s *object = json_value_as_object(root);
     assert(object != NULL);
     assert(object->length == 1);
@@ -188,4 +189,3 @@ std::string url_of_get_name(PersonID key) {
     result += "&language=en&format=json";
     return result;
 }
-
