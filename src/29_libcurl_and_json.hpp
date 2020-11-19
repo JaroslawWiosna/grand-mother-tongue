@@ -8,3 +8,4 @@ std::optional<PersonID> get_mother(PersonID key);
 std::string url_of_get_father(PersonID key);
 std::string url_of_get_mother(PersonID key);
 std::string url_of_get_name(PersonID key);
+std::string url_of_get_native(PersonID key);

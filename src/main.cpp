@@ -182,6 +182,7 @@ int main(int argc, char *argv[]) {
     // std::cout << "phoneBook size == " << phoneBook.hashmap.size() << "\n";
     phoneBook.find_parents_in_wikidata();
     phoneBook.find_names_in_wikidata();
+    phoneBook.find_native_tongue_in_wikidata();
     phoneBook.dump("dumped.txt");
 
     // std::cout << get_name(PersonID{"Q454769"}).value_or(":/") << "\n";

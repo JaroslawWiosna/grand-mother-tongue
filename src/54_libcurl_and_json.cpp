@@ -113,6 +113,67 @@ std::optional<std::string> extract_name(std::string content) {
     return res;
 }
 
+std::optional<std::string> extract_native(std::string content) {
+    size_t size = 64 * 1024;
+    char *json = new char[size];
+    memset((void *)json, '\0', size);
+    memcpy(json, content.c_str(), content.size());
+
+    struct json_value_s *root = json_parse(json, strlen(json));
+    assert(root != NULL);
+    struct json_object_s *object = json_value_as_object(root);
+    assert(object != NULL);
+    assert(object->length == 1);
+
+    struct json_object_element_s *claims = object->start;
+    struct json_string_s *claims_name = claims->name;
+    if (not(0 == strcmp(claims_name->string, "claims"))) {
+        return {};
+    }
+    assert(claims_name->string_size == strlen("claims"));
+    // std::cout << "claims name == " << claims->name->string << "\n";
+
+    struct json_object_s *p25_object = json_value_as_object(claims->value);
+    if (p25_object == nullptr) {
+        return {};
+    }
+    struct json_object_element_s *p25 = p25_object->start;
+    if (p25 == nullptr) {
+        return {};
+    }
+    struct json_string_s *p25_name = p25->name;
+    if (p25_name == nullptr) {
+        return {};
+    }
+    // assert(0 == strcmp(p25_name->string, "P25"));
+    // assert(p25_name->string_size == strlen("P25"));
+
+    struct json_array_s *p25_array = json_value_as_array(p25->value);
+    // struct json_array_element_s* p25_elem = p25_array->start->value;
+    struct json_object_element_s *p25_elem =
+        json_value_as_object(p25_array->start->value)->start;
+    // std::cout << p25_elem->name->string << "\n";
+
+    struct json_object_s *mainsnak_object =
+        json_value_as_object(p25_elem->value);
+    struct json_object_element_s *mainsnak =
+        mainsnak_object->start->next->next->next;
+    struct json_string_s *datavalue = mainsnak->name;
+    // std::cout << datavalue->string << "\n";
+
+    struct json_object_s *language_object = json_value_as_object(
+        json_value_as_object(mainsnak->value)->start->value);
+    struct json_object_element_s *lang = language_object->start->next;
+
+    struct json_string_s *value = json_value_as_string(lang->value);
+    // std::cout << value->string << "\n";
+
+    std::string res{value->string};
+    free(root);
+    delete[] json;
+    return res;
+}
+
 std::optional<PersonID> get_property(PersonID key, std::string property) {
     char buf[512] = {0};
     sprintf(buf,
@@ -187,5 +248,13 @@ std::string url_of_get_name(PersonID key) {
     result += "api.php?action=wbsearchentities&search=";
     result += key.value;
     result += "&language=en&format=json";
+    return result;
+}
+
+std::string url_of_get_native(PersonID key) {
+    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
+    result += key.value;
+    result += "&property=";
+    result += "P1559";
     return result;
 }

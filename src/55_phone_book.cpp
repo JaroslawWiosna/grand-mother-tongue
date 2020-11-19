@@ -20,7 +20,7 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
     auto father = hashmap[id].father;
     auto mother = hashmap[id].mother;
     if (!contains(father) && !contains(mother)) {
-        res[hashmap[id].country] = 1.0;
+        res[hashmap[id].country.value()] = 1.0;
     } else {
         if (contains(father)) {
             for (const auto & [ key, value ] :
@@ -129,6 +129,30 @@ void PhoneBook::find_names_in_wikidata() {
     }
 }
 
+void PhoneBook::find_native_tongue_in_wikidata() {
+    RestApiUrlRequests reqs{};
+    for (const auto & [ key, value ] : hashmap) {
+        if (not value.country.has_value()) {
+            reqs.emplace_back(RestApiUrlRequest{url_of_get_native(key)});
+            // value.name = get_name(key);
+        }
+    }
+    auto resps = request(reqs);
+    for (auto & [ key, value ] : hashmap) {
+        if (not value.country.has_value()) {
+            std::string url_of_get_nat = url_of_get_native(key);
+            auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nat == r.url;});
+            if (it != resps.end()) {
+                auto result = extract_native((*it).res.value());
+                if (result.has_value()) {
+                    value.country = result;
+                }
+            }
+            std::cout << "[FOUND NATIVE TONGUE] " << value.country.value_or("") << "\n";
+        }
+    }
+}
+
 // returns true if at least one parent was found
 // return false if no parent was found
 bool PhoneBook::find_parents_in_wikidata() {
@@ -212,7 +236,7 @@ void PhoneBook::dump(std::string filepath) {
     f.open(filepath);
     for (const auto & [ key, value ] : hashmap) {
         f << key.value << " : " << value.name.value_or("NN") << " : "
-          << value.country << "\n";
+          << value.country.value_or("") << "\n";
     }
     f << "\n";
     for (const auto & [ key, value ] : hashmap) {
