@@ -124,7 +124,7 @@ int PhoneBook::find_names_in_wikidata() {
                     value.name = result.value();
                 }
             }
-            std::cout << "[FOUND NAME] " << value.name.value_or("NN") << "\n";
+            aids::println(stderr, "[FOUND NAME]          ", value.name.value_or("").c_str());
         }
     }
     return resps.size();
@@ -147,7 +147,7 @@ int PhoneBook::find_native_tongue_in_wikidata() {
                 auto result = extract_native((*it).res.value());
                 if (result.has_value()) {
                     value.country = result;
-                    std::cout << "[FOUND NATIVE TONGUE] " << value.country.value_or("") << "\n";
+                    aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or("").c_str());
                 }
             }
         }
@@ -203,27 +203,25 @@ int PhoneBook::find_parents_in_wikidata() {
             if (not hashmap[key].father.has_value()) {
                 if (value.father.has_value()) {
                     hashmap[key].father = value.father;
-                    std::cout << "[ADD FATHER] " << key.value << "'s father is "
-                          << value.father.value().value << "\n";
+                    aids::println(stderr, "[ADD FATHER]          ", key.value.c_str(), "'s father is ", value.father.value().value.c_str());
                 }
             }
             if (not hashmap[key].mother.has_value()) {
                 if (value.mother.has_value()) {
                     hashmap[key].mother = value.mother;
-                    std::cout << "[ADD MOTHER] " << key.value << "'s mother is "
-                            << value.mother.value().value << "\n";
+                    aids::println(stderr, "[ADD MOTHER]          ", key.value.c_str(), "'s mother is ", value.mother.value().value.c_str());
                 }
             }
             if (not contains(value.father)) {
                 if (value.father.has_value()) {
                     hashmap[value.father.value()] = Person{};
-                    std::cout << "[ADD NEW] " << value.father.value().value << "\n";
+                    aids::println(stderr, "[ADD NEW]             ", value.father.value().value.c_str());
                 }
             }
             if (not contains(value.mother)) {
                 if (value.mother.has_value()) {
                     hashmap[value.mother.value()] = Person{};
-                    std::cout << "[ADD NEW] " << value.mother.value().value << "\n";
+                    aids::println(stderr, "[ADD NEW]             ", value.mother.value().value.c_str());
                 }
             }
         }

@@ -14,7 +14,7 @@
 #include <cstring>
 #include <iostream>
 
-constexpr int MAX_CURL_CALLS = 100;
+constexpr int MAX_CURL_CALLS = 20;
 static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
