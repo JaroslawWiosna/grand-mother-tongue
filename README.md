@@ -23,4 +23,7 @@ François d'Orléans, Prince of Joinville
 
 https://stackoverflow.com/questions/34815172/how-to-get-all-property-values-labels-of-an-wikidata-item
 https://www.wikidata.org/w/api.php?action=help&modules=wbgetclaims
+https://youtu.be/15Uce4fG4R0 <-- Is Everyone a Descendant of Royalty? by UsefulCharts
+https://youtu.be/Fm0hOex4psA <-- EVERY baby is a ROYAL baby - Numberphile
+
 
