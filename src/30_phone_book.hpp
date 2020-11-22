@@ -14,9 +14,9 @@ struct PhoneBook {
     Blood origin_by_blood(PersonID);
     void print_origin_by_blood(PersonID);
 
-    void find_native_tongue_in_wikidata();
-    void find_names_in_wikidata();
-    bool find_parents_in_wikidata();
+    int find_native_tongue_in_wikidata();
+    int find_names_in_wikidata();
+    int find_parents_in_wikidata();
     void dump(std::string filepath);
 };
 

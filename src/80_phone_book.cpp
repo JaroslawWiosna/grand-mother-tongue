@@ -105,7 +105,7 @@ PhoneBook parse(std::string filepath) {
     return res;
 }
 
-void PhoneBook::find_names_in_wikidata() {
+int PhoneBook::find_names_in_wikidata() {
     RestApiUrlRequests reqs{};
     for (const auto & [ key, value ] : hashmap) {
         if (not value.name.has_value()) {
@@ -127,9 +127,10 @@ void PhoneBook::find_names_in_wikidata() {
             std::cout << "[FOUND NAME] " << value.name.value_or("NN") << "\n";
         }
     }
+    return resps.size();
 }
 
-void PhoneBook::find_native_tongue_in_wikidata() {
+int PhoneBook::find_native_tongue_in_wikidata() {
     RestApiUrlRequests reqs{};
     for (const auto & [ key, value ] : hashmap) {
         if (not value.country.has_value()) {
@@ -151,11 +152,10 @@ void PhoneBook::find_native_tongue_in_wikidata() {
             std::cout << "[FOUND NATIVE TONGUE] " << value.country.value_or("") << "\n";
         }
     }
+    return resps.size();
 }
 
-// returns true if at least one parent was found
-// return false if no parent was found
-bool PhoneBook::find_parents_in_wikidata() {
+int PhoneBook::find_parents_in_wikidata() {
     bool result = {true};
     std::unordered_map<PersonID, Person> new_parents{};
     char buf[512] = {0};
@@ -228,7 +228,7 @@ bool PhoneBook::find_parents_in_wikidata() {
             }
         }
     }
-    return result;
+    return resps.size();
 }
 
 void PhoneBook::dump(std::string filepath) {

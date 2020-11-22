@@ -1,3 +1,5 @@
+#include "../3rd_party/aids.hpp"
+
 #include "10_libcurl.hpp"
 #include "25_person.hpp"
 #include "29_libcurl_and_json.hpp"
@@ -12,14 +14,24 @@
 #include <cstring>
 #include <iostream>
 
-int main(int argc, char *argv[]) {
-    std::cout << "Welcome to " << argv[0] << "\n";
-    auto phoneBook = parse(argv[1]);
+constexpr int MAX_CURL_CALLS = 5;
+static int curl_calls_cnt{};
 
-    phoneBook.find_parents_in_wikidata();
-    phoneBook.find_names_in_wikidata();
-    phoneBook.find_native_tongue_in_wikidata();
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        aids::panic("Usage: ./grand-mother-tongue <Wikidata Item>");
+    }
+    auto phoneBook = PhoneBook{};
+    phoneBook.hashmap[PersonID{argv[1]}] = Person{};
+
+    while (curl_calls_cnt < MAX_CURL_CALLS) {
+        curl_calls_cnt += phoneBook.find_parents_in_wikidata();
+        curl_calls_cnt += phoneBook.find_names_in_wikidata();
+        curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
+    }
     phoneBook.dump("dumped.txt");
+
+    phoneBook.print_origin_by_blood(PersonID{argv[1]});
 
     return 0;
 }
