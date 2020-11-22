@@ -10,8 +10,6 @@
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
 
-#include <iostream>
-
 constexpr int MAX_CURL_CALLS = 2000;
 static int curl_calls_cnt{};
 
