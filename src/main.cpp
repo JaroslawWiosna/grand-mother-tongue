@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-constexpr int MAX_CURL_CALLS = 20;
+constexpr int MAX_CURL_CALLS = 2000;
 static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
