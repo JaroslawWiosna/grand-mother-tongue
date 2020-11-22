@@ -20,7 +20,7 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
     auto father = hashmap[id].father;
     auto mother = hashmap[id].mother;
     if (!contains(father) && !contains(mother)) {
-        res[hashmap[id].country.value()] = 1.0;
+        res[hashmap[id].country.value_or("Unknown")] = 1.0;
     } else {
         if (contains(father)) {
             for (const auto & [ key, value ] :
