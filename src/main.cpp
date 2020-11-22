@@ -3,10 +3,10 @@
 #include "29_libcurl_and_json.hpp"
 #include "30_phone_book.hpp"
 
-#include "35_libcurl.cpp"
-#include "50_person.cpp"
-#include "54_libcurl_and_json.cpp"
-#include "55_phone_book.cpp"
+#include "60_libcurl.cpp"
+#include "75_person.cpp"
+#include "79_libcurl_and_json.cpp"
+#include "80_phone_book.cpp"
 
 #include <cassert>
 #include <cstring>
