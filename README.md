@@ -2,7 +2,7 @@
 # grand-mother-tongue
 
 
-For example, for: `make -B && ./grand-mother-tongue Q454337` and `MAX_CURL_CALLS = 2000;`
+For example, for: `make -B && ./grand-mother-tongue Q454337` and `MAX_CURL_CALLS = 2000;` (based on 2dd4f45 )
 
 ```
 << ORIGIN BY BLOOD >>
