@@ -10,7 +10,12 @@
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
 
-constexpr int MAX_CURL_CALLS = 2000;
+// NOTE: MAX_CURL_CALLS_TRESHOLD is not MAX_CURL_CALLS, 
+//       because the actual curl_calls_cnt may 
+//       (and most likely will be) greater than MAX_CURL_CALLS_TRESHOLD. 
+//       The reason is because we don't wanna early return from the while loop below. 
+//       We want to finish the loop iteration when the treshold is met.
+constexpr int MAX_CURL_CALLS_TRESHOLD = 15;
 static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
@@ -20,7 +25,7 @@ int main(int argc, char *argv[]) {
     auto phoneBook = PhoneBook{};
     phoneBook.hashmap[PersonID{argv[1]}] = Person{};
 
-    while (curl_calls_cnt < MAX_CURL_CALLS) {
+    while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD) {
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
