@@ -136,22 +136,6 @@ RestApiUrlResponses request(const RestApiUrlRequests requests) {
                 CURL *e = msg->easy_handle;
                 int httpCode{};
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &url);
-                // curl_easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &httpCode);
-                // fprintf(stderr, "R: %d - %s\n", msg->data.result,
-                        // curl_easy_strerror(msg->data.result));
-
-//                if (0 == msg->data.result ) {
-//                    for (auto &response : responses) {
-//                        if (0 == strcmp(response.url.c_str(), url)) {
-//                            response.res = std::string{*response.buf};
-//                            break;
-//                        }
-//                    }
-//                }                
-//                for (auto &response : responses) {
-//                    std::cout << "response.buf == " << *(response.buf) << '\n';
-//                }
-
                 curl_multi_remove_handle(cm, e);
                 curl_easy_cleanup(e);
             } else {
