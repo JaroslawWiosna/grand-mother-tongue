@@ -147,9 +147,9 @@ int PhoneBook::find_native_tongue_in_wikidata() {
                 auto result = extract_native((*it).res.value());
                 if (result.has_value()) {
                     value.country = result;
+                    std::cout << "[FOUND NATIVE TONGUE] " << value.country.value_or("") << "\n";
                 }
             }
-            std::cout << "[FOUND NATIVE TONGUE] " << value.country.value_or("") << "\n";
         }
     }
     return resps.size();
