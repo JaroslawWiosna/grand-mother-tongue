@@ -10,8 +10,6 @@
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
 
-#include <cassert>
-#include <cstring>
 #include <iostream>
 
 constexpr int MAX_CURL_CALLS = 20;
