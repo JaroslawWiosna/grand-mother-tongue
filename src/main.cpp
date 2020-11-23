@@ -29,8 +29,7 @@ int main(int argc, char *argv[]) {
         auto it = args.shift();
         if (0 == strcmp("--db", it)) {
             database_filepath = {true, cstr_as_string_view(args.shift())};
-            //TODO: Crash add if database_filepath doesn't exist.
-            // aids::panic("Usage: ./grand-mother-tongue --db <database.txt> -i <Wikidata Item>");
+            //TODO(#6): Crash add if database_filepath doesn't exist.
             continue;
         }
         if (0 == strcmp("-i", it)) {
