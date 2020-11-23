@@ -20,6 +20,7 @@ static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
+        // TODO(#3): accept database.txt as argv
         aids::panic("Usage: ./grand-mother-tongue <Wikidata Item>");
     }
     auto phoneBook = PhoneBook{};
