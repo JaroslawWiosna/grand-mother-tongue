@@ -1,2 +1,2 @@
-Q53449 : Jadwiga of Poland : Unknown
-Q53998 : Louis I of Hungary : Unknown
+Q53449 : Jadwiga of Poland : Unknown : :
+Q53998 : Louis I of Hungary : Unknown : :
