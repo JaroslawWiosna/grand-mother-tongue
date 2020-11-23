@@ -1,0 +1,15 @@
+diff --git a/3rd_party/aids-patched.hpp b/3rd_party/aids-patched.hpp
+index 3a8c939..94000c5 100644
+--- a/3rd_party/aids-patched.hpp
++++ b/3rd_party/aids-patched.hpp
+@@ -203,6 +203,10 @@ namespace aids
+ 
+             return !this->has_value && !that.has_value;
+         }
++
++        T value_or(T t) const {
++            return (has_value ? unwrap : t);
++        }
+     };
+ 
+ #define unwrap_into(lvalue, maybe)              \
