@@ -19,6 +19,17 @@ François d'Orléans, Prince of Joinville
 
 ```
 
+## Emojis (just to see how they look in github's page
+
+👑
+🤴
+👸
+🩸
+🇫🇷
+🇩🇪
+
+
+
 ## references
 
 https://stackoverflow.com/questions/34815172/how-to-get-all-property-values-labels-of-an-wikidata-item
