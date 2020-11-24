@@ -1,5 +1,6 @@
-#include "../3rd_party/aids.hpp"
+#include "../3rd_party/aids-patched.hpp"
 
+#include "02_linear_alloc.hpp"
 #include "10_libcurl.hpp"
 #include "25_person.hpp"
 #include "29_libcurl_and_json.hpp"
@@ -17,10 +18,12 @@
 //       (and most likely will be) greater than MAX_CURL_CALLS_TRESHOLD. 
 //       The reason is because we don't wanna early return from the while loop below. 
 //       We want to finish the loop iteration when the treshold is met.
-constexpr int MAX_CURL_CALLS_TRESHOLD = 15;
+constexpr int MAX_CURL_CALLS_TRESHOLD = 10;
 static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
+    int a;
+    a += 42;
     using namespace aids;
     Maybe<String_View> database_filepath{};
     Maybe<String_View> initial_person{};
@@ -44,14 +47,10 @@ int main(int argc, char *argv[]) {
 
     auto phoneBook = PhoneBook{};
     if (database_filepath.has_value) {
-        char buf[512];
-        aids::String_Buffer sbuffer = {sizeof(buf), buf};
-        aids::sprintln(&sbuffer, database_filepath);
-        std::string tmp{sbuffer.data};
-        phoneBook = parse(tmp);
+        phoneBook = parse(database_filepath.unwrap);
     }
     
-    const auto initial_person_key = PersonID{initial_person.unwrap.data};
+    const auto initial_person_key = PersonID{initial_person.unwrap};
     if (not phoneBook.contains(initial_person_key)) {
         phoneBook.hashmap[initial_person_key] = Person{};
     }

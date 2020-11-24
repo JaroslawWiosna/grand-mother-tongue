@@ -1,21 +1,32 @@
 #pragma once
 
-#include <string>
+#include "../3rd_party/aids-patched.hpp"
+
 #include <optional>
 
 struct PersonID {
-    std::string value{};
+    aids::String_View value{};
 };
 
 // https://stackoverflow.com/a/17017281
 namespace std {
 template <> struct hash<PersonID> {
     std::size_t operator()(const PersonID &k) const {
-        using std::hash;
-        using std::size_t;
-        using std::string;
-
-        return (hash<string>()(k.value));
+        using aids::operator""_sv;
+        if ("NN"_sv == k.value) {
+            return 0;
+        }
+        if ("UN"_sv == k.value) {
+            return 1;
+        }
+        if ('Q' != k.value.data[0]) {
+            aids::println(stderr, k.value);
+        }
+        assert('Q' == k.value.data[0]);
+        auto v = k.value;
+        v.chop(1);
+        auto result = v.as_integer<std::size_t>();
+        return unwrap_or_panic(result);
     }
 };
 } // namespace std
@@ -30,8 +41,8 @@ bool operator!=(const PersonID &lhs, const PersonID &rhs) {
 
 struct Person {
     PersonID id{};
-    std::optional<std::string> name{};
-    std::optional<std::string> country{};
-    std::optional<PersonID> father{};
-    std::optional<PersonID> mother{};
+    aids::Maybe<aids::String_View> name{};
+    aids::Maybe<aids::String_View> country{};
+    aids::Maybe<PersonID> father{};
+    aids::Maybe<PersonID> mother{};
 };

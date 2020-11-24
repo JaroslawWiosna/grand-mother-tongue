@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../3rd_party/aids-patched.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -71,4 +73,12 @@ auto load_file_to_vector_of_lines(std::string path)
         res.push_back(to);
     }
     return res;
+}
+
+std::string to_stdstring(aids::String_View sv) {
+    char buf[512] = {0};
+    aids::String_Buffer sbuffer = {sizeof(buf), buf};
+    aids::sprint(&sbuffer, sv);
+    assert(strlen(buf) < 500);
+    return std::string{buf};
 }

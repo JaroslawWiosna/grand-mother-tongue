@@ -6,15 +6,16 @@
 #include <cassert>
 #include <cstring>
 
-
-std::optional<std::string> extract_p22_or_p25(std::string content) {
+aids::Maybe<aids::String_View> extract_p22_or_p25(std::string content) {
     size_t size = 64 * 1024;
     char *json = new char[size];
     memset((void *)json, '\0', size);
     memcpy(json, content.c_str(), content.size());
+    defer(delete[] json);
 
     struct json_value_s *root = json_parse(json, strlen(json));
     assert(root != NULL);
+    defer(free(root));
     struct json_object_s *object = json_value_as_object(root);
     assert(object != NULL);
     assert(object->length == 1);
@@ -63,22 +64,27 @@ std::optional<std::string> extract_p22_or_p25(std::string content) {
     struct json_string_s *value = json_value_as_string(id->value);
     // std::cout << value->string << "\n";
 
-    std::string res{value->string};
-    free(root);
-    delete[] json;
-    if (res[0] == 'Q') {
-        return res;
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer, value->string);
+    assert(strlen(buf) < 500);
+    if (buf[0] != 'Q') {
+        return {};
     }
-    return {};
+    return {true, {strlen(buf), buf}};
 }
 
-std::optional<std::string> extract_name(std::string content) {
+aids::Maybe<aids::String_View> extract_name(std::string content) {
     size_t size = 64 * 1024;
     char *json = new char[size];
     memset((void *)json, '\0', size);
     memcpy(json, content.c_str(), content.size());
+    defer(delete[] json);
 
     struct json_value_s *root = json_parse(json, strlen(json));
+    assert(root != NULL);
+    defer(free(root));
     struct json_object_s *object = json_value_as_object(root);
     assert(object != NULL);
 
@@ -106,21 +112,26 @@ std::optional<std::string> extract_name(std::string content) {
         return {};
     }
     struct json_string_s *value = json_value_as_string(p25->value);
-    free(root);
-    delete[] json;
-    std::string res{value->string};
 
-    return res;
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer, value->string);
+    assert(strlen(buf) < 500);
+    return {true, {strlen(buf), buf}};
 }
 
-std::optional<std::string> extract_native(std::string content) {
+aids::Maybe<aids::String_View> extract_native(std::string content) {    
     size_t size = 64 * 1024;
     char *json = new char[size];
     memset((void *)json, '\0', size);
     memcpy(json, content.c_str(), content.size());
+    defer(delete[] json);
 
     struct json_value_s *root = json_parse(json, strlen(json));
     assert(root != NULL);
+    defer(free(root));
+
     struct json_object_s *object = json_value_as_object(root);
     assert(object != NULL);
     assert(object->length == 1);
@@ -168,18 +179,23 @@ std::optional<std::string> extract_native(std::string content) {
     struct json_string_s *value = json_value_as_string(lang->value);
     // std::cout << value->string << "\n";
 
-    std::string res{value->string};
-    free(root);
-    delete[] json;
-    return res;
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer, value->string);
+    assert(strlen(buf) < 500);
+    return {true, {strlen(buf), buf}};
 }
 
-std::optional<PersonID> get_property(PersonID key, std::string property) {
+aids::Maybe<PersonID> get_property(PersonID key, std::string property) {
     char buf[512] = {0};
-    sprintf(buf,
-            "https://www.wikidata.org/w/"
-            "api.php?action=wbgetclaims&format=json&entity=%s&property=%s",
-            key.value.c_str(), property.c_str());
+    aids::String_Buffer sbuffer = {sizeof(buf), buf};
+    aids::sprint(&sbuffer,
+            "https://www.wikidata.org/w/",
+            "api.php?action=wbgetclaims&format=json&entity=",
+            key.value,
+            "&property=",
+            property.c_str());
     auto content = get_via_libcurl(buf);
 #if 0
     if (content.has_value()) {
@@ -191,27 +207,29 @@ std::optional<PersonID> get_property(PersonID key, std::string property) {
     }
 #endif
     auto result = extract_p22_or_p25(content.value());
-    if (result.has_value() && result.value()[0] == 'Q') {
-        return PersonID{result.value()};
+    if (result.has_value && result.unwrap.data[0] == 'Q') {
+        return {true, PersonID{result.unwrap}};
     }
     return {};
 }
 
-std::optional<PersonID> get_father(PersonID key) {
+aids::Maybe<PersonID> get_father(PersonID key) {
     return get_property(key, "P22");
 }
 
-std::optional<PersonID> get_mother(PersonID key) {
+aids::Maybe<PersonID> get_mother(PersonID key) {
     return get_property(key, "P25");
 }
 
-std::optional<std::string> get_name(PersonID key) {
+aids::Maybe<aids::String_View> get_name(PersonID key) {
     char buf[512] = {0};
-    sprintf(buf,
-            "https://www.wikidata.org/w/"
-            "api.php?action=wbsearchentities"
-            "&search=%s&language=en&format=json",
-            key.value.c_str());
+    aids::String_Buffer sbuffer = {sizeof(buf), buf};
+    aids::sprint(&sbuffer,
+            "https://www.wikidata.org/w/",
+            "api.php?action=wbsearchentities",
+            "&search=",
+            key.value,
+            "&language=en&format=json");
     auto content = get_via_libcurl(buf);
 #if 0
     if (content.has_value()) {
@@ -227,34 +245,54 @@ std::optional<std::string> get_name(PersonID key) {
 
 //
 
-std::string url_of_get_father(PersonID key) {
-    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
-    result += key.value;
-    result += "&property=";
-    result += "P22";
-    return result;
+aids::String_View url_of_get_father(PersonID key) {
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer,
+    "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
+    key.value,
+    "&property=",
+    "P22");
+    assert(strlen(buf) < 500);
+    return {strlen(buf), buf};
 }
 
-std::string url_of_get_mother(PersonID key) {
-    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
-    result += key.value;
-    result += "&property=";
-    result += "P25";
-    return result;
+aids::String_View url_of_get_mother(PersonID key) {
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer,
+    "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
+    key.value,
+    "&property=",
+    "P25");
+    assert(strlen(buf) < 500);
+    return {strlen(buf), buf};
 }
 
-std::string url_of_get_name(PersonID key) {
-    std::string result = {"https://www.wikidata.org/w/"};
-    result += "api.php?action=wbsearchentities&search=";
-    result += key.value;
-    result += "&language=en&format=json";
-    return result;
+aids::String_View url_of_get_name(PersonID key) {
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer,
+    "https://www.wikidata.org/w/",
+    "api.php?action=wbsearchentities&search=",
+    key.value,
+    "&language=en&format=json");
+    assert(strlen(buf) < 500);
+    return {strlen(buf), buf};
 }
 
-std::string url_of_get_native(PersonID key) {
-    std::string result = {"https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity="};
-    result += key.value;
-    result += "&property=";
-    result += "P1559";
-    return result;
+aids::String_View url_of_get_native(PersonID key) {
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer,
+    "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
+    key.value,
+    "&property=",
+    "P1559");
+    assert(strlen(buf) < 500);
+    return {strlen(buf), buf};
 }
