@@ -27,7 +27,7 @@ jobs:
       - name: install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -qq g++ curl libcurl4-openssl-dev
+        sudo apt-get install -qq g++ curl libcurl4-openssl-dev
       - name: build and run tests
         run: |
           make tests
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: install dependencies
         run: |
-          brew install curl libcurl4-openssl-dev
+          brew install curl libcurl
       - name: build and run tests
         run: |
           make tests
