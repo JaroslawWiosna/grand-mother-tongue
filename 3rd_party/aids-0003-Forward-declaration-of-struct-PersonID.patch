@@ -1,0 +1,19 @@
+diff --git a/3rd_party/aids-patched.hpp b/3rd_party/aids-patched.hpp
+index 96500bc..8358093 100644
+--- a/3rd_party/aids-patched.hpp
++++ b/3rd_party/aids-patched.hpp
+@@ -107,8 +107,14 @@
+ #include <cstdlib>
+ #include <cstring>
+ 
++
++
++
++
++struct PersonID;
+ namespace aids
+ {
++    unsigned long hash(PersonID);
+     ////////////////////////////////////////////////////////////
+     // ALGORITHM
+     ////////////////////////////////////////////////////////////
