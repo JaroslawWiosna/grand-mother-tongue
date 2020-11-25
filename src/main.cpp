@@ -21,15 +21,31 @@
 constexpr int MAX_CURL_CALLS_TRESHOLD = 2;
 static int curl_calls_cnt{};
 
+void usage(FILE *stream) {
+    aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
+    aids::println(stream, "                             [--db <path>] [--dump-db <path>]          ");
+}
+
 int main(int argc, char *argv[]) {
+    // NOTE: this two lines are reverse-sanity check is for static analyzers
     int a;
     a += 42;
+
     using namespace aids;
     Maybe<String_View> database_filepath{};
     Maybe<String_View> initial_person{};
+    Maybe<String_View> database_output_filepath{};
+    
     Args args{argc, argv};
     while (not args.empty()) {
         auto it = args.shift();
+        if (0 == strcmp("--version", it)) {
+            aids::panic("TODO: --version is not implemented");
+        }
+        if (0 == strcmp("--help", it)) {
+            usage(stdout);
+            return 0;
+        }        
         if (0 == strcmp("--db", it)) {
             database_filepath = {true, cstr_as_string_view(args.shift())};
             //TODO(#6): Crash add if database_filepath doesn't exist.
@@ -39,10 +55,17 @@ int main(int argc, char *argv[]) {
             initial_person = {true, cstr_as_string_view(args.shift())};
             continue;
         }
+        if (0 == strcmp("--dump-db", it) 
+                || 0 == strcmp("--dump_db", it) 
+                || 0 == strcmp("--dump", it)) {
+            database_output_filepath = {true, cstr_as_string_view(args.shift())};
+            continue;
+        }
     }
 
     if (not initial_person.has_value) {
-        aids::panic("Usage: ./grand-mother-tongue --db <database.txt> -i <Wikidata Item>");
+        usage(stderr);
+        aids::panic();
     }
 
     auto phoneBook = PhoneBook{};
@@ -63,7 +86,12 @@ int main(int argc, char *argv[]) {
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
         //TODO(#4): Find the date of birth
     }
-    phoneBook.dump("dumped.txt");
+
+    if (database_output_filepath.has_value) {
+        println(stderr, "TODO: PhoneBook::dump accepts only std::string. Database will be dumped to `dumped.txt` as a woraround");
+        // phoneBook.dump(database_output_filepath.unwrap);
+        phoneBook.dump("dumped.txt");
+    }
 
     phoneBook.print_origin_by_blood(initial_person_key);
 
