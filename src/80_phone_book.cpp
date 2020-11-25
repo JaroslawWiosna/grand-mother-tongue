@@ -15,41 +15,89 @@ bool PhoneBook::contains(aids::Maybe<PersonID> id) {
 Blood PhoneBook::origin_by_blood(PersonID id) {
     using aids::operator""_sv;
 
-    // std::cout << std::hash<PersonID>(id) << '\n';
     Blood res{};
-    auto father = hashmap[id].father;
-    auto mother = hashmap[id].mother;
-    if (!contains(father) && !contains(mother)) {
-        res[hashmap[id].country.value_or("Unknown"_sv)] = 1.0;
+    auto father_hash = hashmap[id].father;
+    auto mother_hash = hashmap[id].mother;
+
+    if (contains(father_hash)) {
+        auto father = origin_by_blood(father_hash.unwrap);
+        if (not father.unknown) {
+            for (size_t i = 0; i < father.map.capacity; ++i) {
+                if (father.map.buckets[i].has_value) {
+                    auto foo = res.map.get(father.map.buckets[i].unwrap.key);
+                    if (foo.has_value) {
+                        *foo.unwrap += father.map.buckets[i].unwrap.value / 2;
+                        res.unknown = false;
+                    } else {
+                        res.map.insert(father.map.buckets[i].unwrap.key, father.map.buckets[i].unwrap.value / 2);
+                        res.unknown = false;
+                    }                   
+                }
+            }            
+        } else {
+            goto father_unknown_country;
+        }
     } else {
-        if (contains(father)) {
-            for (const auto & [ key, value ] :
-                origin_by_blood(father.unwrap)) {
-                res[key] += 0.5 * value;
+father_unknown_country:
+        if (hashmap[id].country.has_value) {
+            auto foo = res.map.get(hashmap[id].country.unwrap);
+            if (foo.has_value) {
+                *foo.unwrap += 50.0;
+                res.unknown = false;
+            } else {
+                res.map.insert(hashmap[id].country.unwrap, 50.0);                
+                res.unknown = false;
             }
+        }        
+    }
+
+    if (contains(mother_hash)) {
+        auto mother = origin_by_blood(mother_hash.unwrap);
+        if (not mother.unknown) {
+            for (size_t i = 0; i < mother.map.capacity; ++i) {
+                if (mother.map.buckets[i].has_value) {
+                    auto foo = res.map.get(mother.map.buckets[i].unwrap.key);
+                    if (foo.has_value) {
+                        *foo.unwrap += mother.map.buckets[i].unwrap.value / 2;
+                        res.unknown = false;
+                    } else {
+                        res.map.insert(mother.map.buckets[i].unwrap.key, mother.map.buckets[i].unwrap.value / 2);
+                        res.unknown = false;
+                    }                   
+                }
+            }            
+        } else {
+            goto mother_unknown_country;
         }
-        if (contains(mother)) {
-            for (const auto & [ key, value ] :
-                 origin_by_blood(mother.unwrap)) {
-                res[key] += 0.5 * value;
+    } else {
+mother_unknown_country:
+        if (hashmap[id].country.has_value) {
+            auto foo = res.map.get(hashmap[id].country.unwrap);
+            if (foo.has_value) {
+                *foo.unwrap += 50.0;
+                res.unknown = false;
+            } else {
+                res.map.insert(hashmap[id].country.unwrap, 50.0);                
+                res.unknown = false;
             }
-        }
+        }        
     }
     return res;
 }
+
 void PhoneBook::print_origin_by_blood(PersonID id) {
     using aids::operator""_sv;
 
     auto res = origin_by_blood(id);
     aids::println(stdout, "<< ORIGIN BY BLOOD >>");
-    aids::println(stdout, hashmap[id].name.value_or("NN"_sv));
-    for (const auto & [ key, value ] : res) {
-        if (key != "Unknown"_sv) {
-            println(stdout, "  ", key, "  ", (float)value);
+    for (size_t i = 0; i < res.map.capacity; ++i) {
+        if (res.map.buckets[i].has_value) {
+            aids::println(stdout, " ", res.map.buckets[i].unwrap.key, " ", (float)res.map.buckets[i].unwrap.value);
         }
     }
     aids::println(stdout);
 }
+
 
 PhoneBook parse(aids::String_View filepath) {
     PhoneBook res{};
