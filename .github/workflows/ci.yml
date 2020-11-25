@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: install dependencies
         run: |
-          brew install clang++ curl libcurl4-openssl-dev
+          brew install curl libcurl4-openssl-dev
       - name: build and run tests
         run: |
           make tests
