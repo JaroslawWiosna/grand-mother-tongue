@@ -31,6 +31,26 @@ template <> struct hash<PersonID> {
 };
 } // namespace std
 
+namespace aids {
+unsigned long hash(PersonID k) {
+    using aids::operator""_sv;
+    if ("NN"_sv == k.value) {
+        return 0;
+    }
+    if ("UN"_sv == k.value) {
+        return 1;
+    }
+    if ('Q' != k.value.data[0]) {
+        aids::println(stderr, k.value);
+    }
+    assert('Q' == k.value.data[0]);
+    auto v = k.value;
+    v.chop(1);
+    auto result = v.as_integer<unsigned long>();
+    return unwrap_or_panic(result);
+}
+} // namespace aids
+
 bool operator==(const PersonID &lhs, const PersonID &rhs) {
     return (lhs.value == rhs.value);
 }

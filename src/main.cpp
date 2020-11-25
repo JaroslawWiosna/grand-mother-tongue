@@ -18,7 +18,7 @@
 //       (and most likely will be) greater than MAX_CURL_CALLS_TRESHOLD. 
 //       The reason is because we don't wanna early return from the while loop below. 
 //       We want to finish the loop iteration when the treshold is met.
-constexpr int MAX_CURL_CALLS_TRESHOLD = 10;
+constexpr int MAX_CURL_CALLS_TRESHOLD = 2;
 static int curl_calls_cnt{};
 
 int main(int argc, char *argv[]) {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     
     const auto initial_person_key = PersonID{initial_person.unwrap};
     if (not phoneBook.contains(initial_person_key)) {
-        phoneBook.hashmap[initial_person_key] = Person{};
+        *phoneBook.hashmap[initial_person_key] = Person{};
     }
 
     while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD) {
