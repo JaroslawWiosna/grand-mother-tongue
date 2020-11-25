@@ -46,6 +46,8 @@ int main(int argc, char *argv[]) {
     }
 
     auto phoneBook = PhoneBook{};
+    defer(destroy(phoneBook.hashmap));
+
     if (database_filepath.has_value) {
         phoneBook = parse(database_filepath.unwrap);
     }

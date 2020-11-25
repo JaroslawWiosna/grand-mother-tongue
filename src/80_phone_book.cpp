@@ -28,6 +28,7 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
 
     if (contains(father_hash)) {
         auto father = origin_by_blood(father_hash.unwrap);
+        defer(destroy(father.map));
         if (not father.unknown) {
             for (size_t i = 0; i < father.map.capacity; ++i) {
                 if (father.map.buckets[i].has_value) {
@@ -60,6 +61,7 @@ father_unknown_country:
 
     if (contains(mother_hash)) {
         auto mother = origin_by_blood(mother_hash.unwrap);
+        defer(destroy(mother.map));
         if (not mother.unknown) {
             for (size_t i = 0; i < mother.map.capacity; ++i) {
                 if (mother.map.buckets[i].has_value) {
@@ -214,6 +216,7 @@ int PhoneBook::find_parents_in_wikidata() {
 
     bool result = {true};
     aids::Hash_Map<PersonID, Person> new_parents{};
+    defer(destroy(new_parents));
     char buf[512] = {0};
     RestApiUrlRequests reqs{};
     for (size_t i = 0; i < hashmap.capacity; ++i) {
