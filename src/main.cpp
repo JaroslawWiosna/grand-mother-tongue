@@ -55,15 +55,15 @@ int main(int argc, char *argv[]) {
         phoneBook.hashmap[initial_person_key] = Person{};
     }
 
-    // while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD) {
-    //     curl_calls_cnt += phoneBook.find_parents_in_wikidata();
-    //     curl_calls_cnt += phoneBook.find_names_in_wikidata();
-    //     curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
-    //     //TODO(#4): Find the date of birth
-    // }
+    while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD) {
+        curl_calls_cnt += phoneBook.find_parents_in_wikidata();
+        curl_calls_cnt += phoneBook.find_names_in_wikidata();
+        curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
+        //TODO(#4): Find the date of birth
+    }
     phoneBook.dump("dumped.txt");
 
-    phoneBook.print_origin_by_blood_but_better(initial_person_key);
+    phoneBook.print_origin_by_blood(initial_person_key);
 
     return 0;
 }

@@ -1,40 +1,38 @@
 #pragma once
 
 #include "../3rd_party/aids-patched.hpp"
-#include <unordered_map>
 
+#include <unordered_map>
 struct PersonID;
 
-using Blood = std::unordered_map<aids::String_View, double>;
+// template<typename Key, typename Value>
+// struct Pair {
+//     Key key{};
+//     Value value{};
+// };
 
-template<typename Key, typename Value>
-struct Pair {
-    Key key{};
-    Value value{};
-};
-
-struct Blood_but_better {
+struct Blood {
     bool unknown{true};
-    aids::Dynamic_Array<Pair<aids::String_View, double>> map{};
+    aids::Hash_Map<aids::String_View, double> map{};
 };
 
-namespace std {
-template <> struct hash<aids::String_View> {
-    std::size_t operator()(const aids::String_View &k) const {
-        using aids::operator""_sv;
-        using std::hash;
-        using std::size_t;
-        using std::string;
+// namespace std {
+// template <> struct hash<aids::String_View> {
+//     std::size_t operator()(const aids::String_View &k) const {
+//         using aids::operator""_sv;
+//         using std::hash;
+//         using std::size_t;
+//         using std::string;
 
-        char buf[512] = {0};
-        aids::String_Buffer sbuffer = {sizeof(buf), buf};
-        aids::sprint(&sbuffer, k);
-        assert(strlen(buf) < 500);
+//         char buf[512] = {0};
+//         aids::String_Buffer sbuffer = {sizeof(buf), buf};
+//         aids::sprint(&sbuffer, k);
+//         assert(strlen(buf) < 500);
 
-        return (hash<string>()(buf));
-    }
-};
-} // namespace std
+//         return (hash<string>()(buf));
+//     }
+// };
+// } // namespace std
 
 struct PhoneBook {
     std::unordered_map<PersonID, Person> hashmap{};
@@ -43,9 +41,6 @@ struct PhoneBook {
 
     Blood origin_by_blood(PersonID);
     void print_origin_by_blood(PersonID);
-
-    Blood_but_better origin_by_blood_but_better(PersonID);
-    void print_origin_by_blood_but_better(PersonID);
 
     int find_native_tongue_in_wikidata();
     int find_names_in_wikidata();
