@@ -5,7 +5,14 @@
 
 
 bool PhoneBook::contains(PersonID id) {
-    return (hashmap.end() != hashmap.find(id));
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            if (hashmap.buckets[i].unwrap.key == id) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool PhoneBook::contains(aids::Maybe<PersonID> id) {
@@ -16,8 +23,8 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
     using aids::operator""_sv;
 
     Blood res{};
-    auto father_hash = hashmap[id].father;
-    auto mother_hash = hashmap[id].mother;
+    auto father_hash = hashmap[id]->father;
+    auto mother_hash = hashmap[id]->mother;
 
     if (contains(father_hash)) {
         auto father = origin_by_blood(father_hash.unwrap);
@@ -39,13 +46,13 @@ Blood PhoneBook::origin_by_blood(PersonID id) {
         }
     } else {
 father_unknown_country:
-        if (hashmap[id].country.has_value) {
-            auto foo = res.map.get(hashmap[id].country.unwrap);
+        if (hashmap[id]->country.has_value) {
+            auto foo = res.map.get(hashmap[id]->country.unwrap);
             if (foo.has_value) {
                 *foo.unwrap += 50.0;
                 res.unknown = false;
             } else {
-                res.map.insert(hashmap[id].country.unwrap, 50.0);                
+                res.map.insert(hashmap[id]->country.unwrap, 50.0);                
                 res.unknown = false;
             }
         }        
@@ -71,13 +78,13 @@ father_unknown_country:
         }
     } else {
 mother_unknown_country:
-        if (hashmap[id].country.has_value) {
-            auto foo = res.map.get(hashmap[id].country.unwrap);
+        if (hashmap[id]->country.has_value) {
+            auto foo = res.map.get(hashmap[id]->country.unwrap);
             if (foo.has_value) {
                 *foo.unwrap += 50.0;
                 res.unknown = false;
             } else {
-                res.map.insert(hashmap[id].country.unwrap, 50.0);                
+                res.map.insert(hashmap[id]->country.unwrap, 50.0);                
                 res.unknown = false;
             }
         }        
@@ -119,17 +126,15 @@ PhoneBook parse(aids::String_View filepath) {
 
         Person person{};
         person.id = PersonID{line.chop_by_delim(':').trim()};
-        person.name = {true, line.chop_by_delim(':').trim()};
-        person.country = {true, line.chop_by_delim(':').trim()};
-        person.father = {true, PersonID{line.chop_by_delim(':').trim()}};
-        person.mother = {true, PersonID{line.chop_by_delim(':').trim()}};
+        res.hashmap[person.id]->name = {true, line.chop_by_delim(':').trim()};
+        res.hashmap[person.id]->country = {true, line.chop_by_delim(':').trim()};
+        res.hashmap[person.id]->father = {true, PersonID{line.chop_by_delim(':').trim()}};
+        res.hashmap[person.id]->mother = {true, PersonID{line.chop_by_delim(':').trim()}};
 
-        person.name.has_value = ((person.name.unwrap.count == 0) ? false : true);
-        person.country.has_value = ((person.country.unwrap.count == 0) ? false : true);
-        person.father.has_value = ((person.father.unwrap.value.count == 0) ? false : true);
-        person.mother.has_value = ((person.mother.unwrap.value.count == 0) ? false : true);
-
-        res.hashmap[person.id] = person;
+        res.hashmap[person.id]->name.has_value = ((person.name.unwrap.count == 0) ? false : true);
+        res.hashmap[person.id]->country.has_value = ((person.country.unwrap.count == 0) ? false : true);
+        res.hashmap[person.id]->father.has_value = ((person.father.unwrap.value.count == 0) ? false : true);
+        res.hashmap[person.id]->mother.has_value = ((person.mother.unwrap.value.count == 0) ? false : true);
     }
     return res;
 }
@@ -138,22 +143,30 @@ int PhoneBook::find_names_in_wikidata() {
     using aids::operator""_sv;
 
     RestApiUrlRequests reqs{};
-    for (const auto & [ key, value ] : hashmap) {
-        if (not value.name.has_value) {
-            reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_name(key))});
-            // value.name = get_name(key);
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.name.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_name(key))});
+            }
         }
     }
     auto resps = request(reqs);
-    for (auto & [ key, value ] : hashmap) {
-        if (not value.name.has_value) {
-            std::string url_of_get_nam = to_stdstring(url_of_get_name(key));
-            auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nam == r.url;});
-            if (it != resps.end()) {
-                auto result = extract_name((*it).res.value());
-                if (result.has_value) {
-                    value.name = {true, {result.unwrap}};
-                    aids::println(stderr, "[FOUND NAME]          ", value.name.value_or(""_sv));
+
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.name.has_value) {
+                std::string url_of_get_nam = to_stdstring(url_of_get_name(key));
+                auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nam == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_name((*it).res.value());
+                    if (result.has_value) {
+                        value.name = {true, {result.unwrap}};
+                        aids::println(stderr, "[FOUND NAME]          ", value.name.value_or(""_sv));
+                    }
                 }
             }
         }
@@ -165,22 +178,30 @@ int PhoneBook::find_native_tongue_in_wikidata() {
     using aids::operator""_sv;
 
     RestApiUrlRequests reqs{};
-    for (const auto & [ key, value ] : hashmap) {
-        if (not value.country.has_value) {
-            reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_native(key))});
-            // value.name = get_name(key);
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.country.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_native(key))});
+                // value.name = get_name(key);
+            }
         }
     }
     auto resps = request(reqs);
-    for (auto & [ key, value ] : hashmap) {
-        if (not value.country.has_value) {
-            std::string url_of_get_nat = to_stdstring(url_of_get_native(key));
-            auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nat == r.url;});
-            if (it != resps.end()) {
-                auto result = extract_native((*it).res.value());
-                if (result.has_value) {
-                    value.country = {true, {result.unwrap}};
-                    aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv));
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.country.has_value) {
+                std::string url_of_get_nat = to_stdstring(url_of_get_native(key));
+                auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_nat == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_native((*it).res.value());
+                    if (result.has_value) {
+                        value.country = {true, {result.unwrap}};
+                        aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv));
+                    }
                 }
             }
         }
@@ -192,71 +213,83 @@ int PhoneBook::find_parents_in_wikidata() {
     using aids::operator""_sv;
 
     bool result = {true};
-    std::unordered_map<PersonID, Person> new_parents{};
+    aids::Hash_Map<PersonID, Person> new_parents{};
     char buf[512] = {0};
     RestApiUrlRequests reqs{};
-    for (const auto & [ key, value ] : hashmap) {
-        if (not hashmap[key].father.has_value) {
-            reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_father(key))});
-        }
-        if (not hashmap[key].mother.has_value) {
-            reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_mother(key))});
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not hashmap[key]->father.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_father(key))});
+            }
+            if (not hashmap[key]->mother.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_mother(key))});
+            }
         }
     }
     auto resps = request(reqs);
-    for (const auto & [ key, value ] : hashmap) {
-        if (key == PersonID{"UN"_sv}) {
-            continue;
-        }
-        if (not hashmap[key].father.has_value) {
-            std::string url_of_get_fathe = to_stdstring(url_of_get_father(key));
-            auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_fathe == r.url;});
-            if (it != resps.end()) {
-                auto result = extract_p22_or_p25((*it).res.value());
-                if (result.has_value && result.unwrap.data[0] == 'Q') {
-                    new_parents[key].father = {true, PersonID{{result.unwrap}}};
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (key == PersonID{"UN"_sv}) {
+                continue;
+            }
+            if (not hashmap[key]->father.has_value) {
+                std::string url_of_get_fathe = to_stdstring(url_of_get_father(key));
+                auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_fathe == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_p22_or_p25((*it).res.value());
+                    if (result.has_value && result.unwrap.data[0] == 'Q') {
+                        new_parents[key]->father = {true, PersonID{{result.unwrap}}};
+                    }
                 }
             }
-        }
-        if (not hashmap[key].mother.has_value) {
-            std::string url_of_get_mothe = to_stdstring(url_of_get_mother(key));
-            auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_mothe == r.url;});
-            if (it != resps.end()) {
-                auto result = extract_p22_or_p25((*it).res.value());
-                if (result.has_value && result.unwrap.data[0] == 'Q') {
-                    new_parents[key].mother = {true, PersonID{{result.unwrap}}};
+            if (not hashmap[key]->mother.has_value) {
+                std::string url_of_get_mothe = to_stdstring(url_of_get_mother(key));
+                auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_mothe == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_p22_or_p25((*it).res.value());
+                    if (result.has_value && result.unwrap.data[0] == 'Q') {
+                        new_parents[key]->mother = {true, PersonID{{result.unwrap}}};
+                    }
                 }
             }
         }
     }   
 
     if (result == true) {
-        for (const auto & [ key, value ] : new_parents) {
-            if (key == PersonID{"UN"_sv}) {
-                continue;
-            }
-            if (not hashmap[key].father.has_value) {
-                if (value.father.has_value) {
-                    hashmap[key].father = value.father;
-                    aids::println(stderr, "[ADD FATHER]          ", key.value, "'s father is ", value.father.unwrap.value);
+        for (size_t i = 0; i < new_parents.capacity; ++i) {
+            if (new_parents.buckets[i].has_value) {
+                auto &key = new_parents.buckets[i].unwrap.key;
+                auto &value = new_parents.buckets[i].unwrap.value;
+                if (key == PersonID{"UN"_sv}) {
+                    continue;
                 }
-            }
-            if (not hashmap[key].mother.has_value) {
-                if (value.mother.has_value) {
-                    hashmap[key].mother = value.mother;
-                    aids::println(stderr, "[ADD MOTHER]          ", key.value, "'s mother is ", value.mother.unwrap.value);
+                if (not hashmap[key]->father.has_value) {
+                    if (value.father.has_value) {
+                        hashmap[key]->father = value.father;
+                        aids::println(stderr, "[ADD FATHER]          ", key.value, "'s father is ", value.father.unwrap.value);
+                    }
                 }
-            }
-            if (not contains(value.father)) {
-                if (value.father.has_value) {
-                    hashmap[value.father.unwrap] = Person{};
-                    aids::println(stderr, "[ADD NEW]             ", value.father.unwrap.value);
+                if (not hashmap[key]->mother.has_value) {
+                    if (value.mother.has_value) {
+                        hashmap[key]->mother = value.mother;
+                        aids::println(stderr, "[ADD MOTHER]          ", key.value, "'s mother is ", value.mother.unwrap.value);
+                    }
                 }
-            }
-            if (not contains(value.mother)) {
-                if (value.mother.has_value) {
-                    hashmap[value.mother.unwrap] = Person{};
-                    aids::println(stderr, "[ADD NEW]             ", value.mother.unwrap.value);
+                if (not contains(value.father)) {
+                    if (value.father.has_value) {
+                        *hashmap[value.father.unwrap] = Person{};
+                        aids::println(stderr, "[ADD NEW]             ", value.father.unwrap.value);
+                    }
+                }
+                if (not contains(value.mother)) {
+                    if (value.mother.has_value) {
+                        *hashmap[value.mother.unwrap] = Person{};
+                        aids::println(stderr, "[ADD NEW]             ", value.mother.unwrap.value);
+                    }
                 }
             }
         }
@@ -268,11 +301,15 @@ void PhoneBook::dump(std::string filepath) {
     using aids::operator""_sv;
 
     FILE* file = fopen(filepath.c_str(), "w+");
-    for (const auto & [ key, value ] : hashmap) {
-        aids::println(file, key.value, " : ", value.name.value_or("NN"_sv),
-                " : ", value.country.value_or(""_sv),
-                " : ", value.father.has_value ? value.father.unwrap.value : ""_sv,
-                " : ", value.mother.has_value ? value.mother.unwrap.value : ""_sv);
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            aids::println(file, key.value, " : ", value.name.value_or("NN"_sv),
+                    " : ", value.country.value_or(""_sv),
+                    " : ", value.father.has_value ? value.father.unwrap.value : ""_sv,
+                    " : ", value.mother.has_value ? value.mother.unwrap.value : ""_sv);
+        }
     }
     fclose(file);
 }

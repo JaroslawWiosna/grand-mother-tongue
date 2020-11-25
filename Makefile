@@ -5,7 +5,7 @@ all: $(PROJECT_NAME)
 
 3rd_party/aids-patched.hpp: $(wildcard 3rd_party/*.patch) 3rd_party/aids.hpp
 	cp 3rd_party/aids.hpp 3rd_party/aids-patched.hpp
-	git apply 3rd_party/aids*.patch
+	git apply 3rd_party/aids-*.patch
 
 $(PROJECT_NAME): $(wildcard src/*.cpp) $(wildcard src/*.hpp) 3rd_party/aids-patched.hpp
 	c++ src/main.cpp -std=c++17 -ggdb -lcurl -o $(PROJECT_NAME)
