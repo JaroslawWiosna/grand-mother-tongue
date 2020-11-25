@@ -9,7 +9,7 @@ jobs:
       - name: install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -qq g++ curl
+          sudo apt-get install -qq g++ curl libcurl-dev
       - name: build and run tests
         run: |
           make tests
@@ -27,7 +27,7 @@ jobs:
       - name: install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -qq g++ curl
+          sudo apt-get install -qq g++ curl libcurl-dev
       - name: build and run tests
         run: |
           make tests
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: install dependencies
         run: |
-          brew install clang++ curl
+          brew install clang++ curl libcurl-dev
       - name: build and run tests
         run: |
           make tests
