@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     while (not args.empty()) {
         auto it = args.shift();
         if (0 == strcmp("--version", it)) {
-            aids::panic("TODO: --version is not implemented");
+            aids::panic("TODO(#13): --version is not implemented");
         }
         if (0 == strcmp("--help", it)) {
             usage(stdout);
