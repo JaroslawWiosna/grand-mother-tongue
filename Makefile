@@ -14,7 +14,7 @@ format:
 	find src/ -iname *.hpp -o -iname *.cpp | xargs /opt/rh/llvm-toolset-7/root/usr/bin/clang-format -i -style=file
 
 tests:
-	#TODO: No tests written
+	#TODO(#18): No tests written
 
 clean:
 	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME)
