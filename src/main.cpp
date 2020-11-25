@@ -24,6 +24,7 @@ static int curl_calls_cnt{};
 void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
     aids::println(stream, "                             [--db <path>] [--dump-db <path>]          ");
+    aids::println(stream, "                             [--blood-pie-chart <path>                 ");
 }
 
 int main(int argc, char *argv[]) {
@@ -60,6 +61,10 @@ int main(int argc, char *argv[]) {
                 || 0 == strcmp("--dump", it)) {
             database_output_filepath = {true, cstr_as_string_view(args.shift())};
             continue;
+        }
+        if (0 == strcmp("--blood-pie-chart", it)
+                || 0 == strcmp("--blood_pie_chart", it)) {
+            aids::panic("TODO(#15): --blood-pie-chart is not implemented");
         }
     }
 
