@@ -7,6 +7,17 @@ struct PersonID;
 
 using Blood = std::unordered_map<aids::String_View, double>;
 
+template<typename Key, typename Value>
+struct Pair {
+    Key key{};
+    Value value{};
+};
+
+struct Blood_but_better {
+    bool unknown{true};
+    aids::Dynamic_Array<Pair<aids::String_View, double>> map{};
+};
+
 namespace std {
 template <> struct hash<aids::String_View> {
     std::size_t operator()(const aids::String_View &k) const {
@@ -32,6 +43,9 @@ struct PhoneBook {
 
     Blood origin_by_blood(PersonID);
     void print_origin_by_blood(PersonID);
+
+    Blood_but_better origin_by_blood_but_better(PersonID);
+    void print_origin_by_blood_but_better(PersonID);
 
     int find_native_tongue_in_wikidata();
     int find_names_in_wikidata();

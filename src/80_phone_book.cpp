@@ -51,6 +51,76 @@ void PhoneBook::print_origin_by_blood(PersonID id) {
     aids::println(stdout);
 }
 
+Blood_but_better PhoneBook::origin_by_blood_but_better(PersonID id) {
+    using aids::operator""_sv;
+
+    Blood_but_better res{};
+    auto father_hash = hashmap[id].father;
+    auto mother_hash = hashmap[id].mother;
+    if (!contains(father_hash) && !contains(mother_hash)) {
+        if (hashmap[id].country.has_value) {
+            res.map.push({{hashmap[id].country.unwrap}, 1.0});
+            res.unknown = false;
+        }
+    }
+    if (contains(father_hash) && !contains(mother_hash)) {
+        auto father = origin_by_blood_but_better(father_hash.unwrap);
+        if (not father.unknown) {
+            for (int i{}; i < father.map.size; ++i) {
+                res.map.push({{father.map.data[i].key}, father.map.data[i].value / 2});
+            }
+            res.unknown = false;
+        }
+        if (hashmap[id].country.has_value) {
+            res.map.push({{hashmap[id].country.unwrap}, 0.5});
+            res.unknown = false;
+        }
+    }
+    if (!contains(father_hash) && contains(mother_hash)) {
+        auto mother = origin_by_blood_but_better(mother_hash.unwrap);
+        if (not mother.unknown) {
+            for (int i{}; i < mother.map.size; ++i) {
+                res.map.push({{mother.map.data[i].key}, mother.map.data[i].value / 2});
+            }
+            res.unknown = false;
+        }
+        if (hashmap[id].country.has_value) {
+            res.map.push({{hashmap[id].country.unwrap}, 0.5});
+            res.unknown = false;
+        }
+    }
+    if (contains(father_hash) && contains(mother_hash)) {
+        auto father = origin_by_blood_but_better(father_hash.unwrap);
+        if (not father.unknown) {
+            for (int i{}; i < father.map.size; ++i) {
+                res.map.push({{father.map.data[i].key}, father.map.data[i].value / 2});
+            }
+            res.unknown = false;
+        }
+        auto mother = origin_by_blood_but_better(mother_hash.unwrap);
+        if (not mother.unknown) {
+            for (int i{}; i < mother.map.size; ++i) {
+                res.map.push({{mother.map.data[i].key}, mother.map.data[i].value / 2});
+            }
+            res.unknown = false;
+        }
+    }
+
+    return res;
+}
+
+void PhoneBook::print_origin_by_blood_but_better(PersonID id) {
+    using aids::operator""_sv;
+
+    auto res = origin_by_blood_but_better(id);
+    aids::println(stdout, "<< ORIGIN BY BLOOD >>");
+    for (int i{}; i < res.map.size; ++i) {
+        aids::println(stdout, " ", res.map.data[i].key, " ", (float)res.map.data[i].value);
+    }
+    aids::println(stdout);
+}
+
+
 PhoneBook parse(aids::String_View filepath) {
     PhoneBook res{};
     
