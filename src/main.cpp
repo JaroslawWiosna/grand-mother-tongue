@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (database_output_filepath.has_value) {
-        println(stderr, "TODO: PhoneBook::dump accepts only std::string. Database will be dumped to `dumped.txt` as a woraround");
+        println(stderr, "TODO(#14): PhoneBook::dump accepts only std::string. Database will be dumped to `dumped.txt` as a woraround");
         // phoneBook.dump(database_output_filepath.unwrap);
         phoneBook.dump("dumped.txt");
     }
