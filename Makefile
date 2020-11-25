@@ -1,6 +1,6 @@
 PROJECT_NAME=grand-mother-tongue
 
-.PHONY: all run format
+.PHONY: all run format tests clean
 all: $(PROJECT_NAME)
 
 3rd_party/aids-patched.hpp: $(wildcard 3rd_party/*.patch) 3rd_party/aids.hpp
@@ -12,6 +12,9 @@ $(PROJECT_NAME): $(wildcard src/*.cpp) $(wildcard src/*.hpp) 3rd_party/aids-patc
 
 format:	
 	find src/ -iname *.hpp -o -iname *.cpp | xargs /opt/rh/llvm-toolset-7/root/usr/bin/clang-format -i -style=file
+
+tests:
+	#TODO(#18): No tests written
 
 clean:
 	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME)

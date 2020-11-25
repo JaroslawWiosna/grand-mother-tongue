@@ -1,0 +1,57 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build-linux-gcc:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qq g++ curl libcurl4-openssl-dev
+      - name: build and run tests
+        run: |
+          make tests
+      - name: build
+        run: |
+          make -B
+        env:
+          CC: gcc
+          CXX: g++
+          
+  build-linux-clang:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          sudo apt-get update
+        sudo apt-get install -qq g++ curl libcurl4-openssl-dev
+      - name: build and run tests
+        run: |
+          make tests
+      - name: build
+        run: |
+          make -B
+        env:
+          CC: clang
+          CXX: clang++
+          
+  build-macos-clang:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          brew install curl libcurl
+      - name: build and run tests
+        run: |
+          make tests
+      - name: build
+        run: |
+          make -B
+        env:
+          CC: clang
+          CXX: clang++
+          
