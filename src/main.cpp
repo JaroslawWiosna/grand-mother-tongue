@@ -1,5 +1,6 @@
 #include "../3rd_party/aids-patched.hpp"
 
+#include "version.cpp"
 #include "02_linear_alloc.hpp"
 #include "10_libcurl.hpp"
 #include "25_person.hpp"
@@ -41,7 +42,8 @@ int main(int argc, char *argv[]) {
     while (not args.empty()) {
         auto it = args.shift();
         if (0 == strcmp("--version", it)) {
-            aids::panic("TODO(#13): --version is not implemented");
+            println(stdout, version);
+            return 0;
         }
         if (0 == strcmp("--help", it)) {
             usage(stdout);
