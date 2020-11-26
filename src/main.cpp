@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
     Maybe<String_View> initial_person{};
     Maybe<String_View> database_output_filepath{};
     Maybe<size_t> max_gen{};
+    Maybe<String_View> blood_pie_chart_output_filepath{};
     
     Args args{argc, argv};
     while (not args.empty()) {
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
         }
         if (0 == strcmp("--blood-pie-chart", it)
                 || 0 == strcmp("--blood_pie_chart", it)) {
-            aids::panic("TODO(#15): --blood-pie-chart is not implemented");
+            blood_pie_chart_output_filepath = {true, cstr_as_string_view(args.shift())};
         }
         if (0 == strcmp("-g", it)
                 || 0 == strcmp("--max_generations", it)
@@ -115,6 +116,25 @@ int main(int argc, char *argv[]) {
     }
 
     phoneBook.print_origin_by_blood(initial_person_key);
+
+    if (blood_pie_chart_output_filepath.has_value) {
+        //TODO(#15): --blood-pie-chart is not implemented 
+        FILE *gnuplot = popen("gnuplot -p", "w");
+        const   char* const gnuplot_cmds[] = {
+        "reset\n",
+        "set term png\n",
+        "set output 'output.png'\n",
+        "set boxwidth 0.5\n", 
+        "set style fill solid\n",
+        "plot 'data.dat' using 1:3:xtic(2) with boxes\n"
+        };
+        const size_t gnuplot_cmds_cnt{6};
+        for (size_t i = 0; i < gnuplot_cmds_cnt; ++i) {
+            fprintf(gnuplot, "%s \n", gnuplot_cmds[i]);
+        }
+        fflush(gnuplot);
+        pclose(gnuplot);
+    }
 
     return 0;
 }
