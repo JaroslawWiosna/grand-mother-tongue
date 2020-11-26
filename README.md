@@ -8,7 +8,7 @@ Have you ever wonder how many languages does your blood speak?
 `grand-mother-tongue` can tell you, if only you know your *Wikidata item*.
 
 Most likely you don't have your own *Wikidata item*. Too bad.
-You can always check out the blood of your favourite nobleman...
+You can always check out the blood of your favourite nobleman instead...
 
 ## Usage
 
