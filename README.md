@@ -1,4 +1,4 @@
-<!--- TODO(#19): No CI badge -->
+[![Build Status](https://github.com/JaroslawWiosna/grand-mother-tongue/workflows/CI/badge.svg)](https://github.com/JaroslawWiosna/grand-mother-tongue/actions)
 
 # 👪 grand-mother-tongue  👵   👴
 
