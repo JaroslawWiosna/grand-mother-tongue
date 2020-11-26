@@ -19,13 +19,13 @@
 //       (and most likely will be) greater than MAX_CURL_CALLS_TRESHOLD. 
 //       The reason is because we don't wanna early return from the while loop below. 
 //       We want to finish the loop iteration when the treshold is met.
-constexpr int MAX_CURL_CALLS_TRESHOLD = 2;
+constexpr int MAX_CURL_CALLS_TRESHOLD = 2000;
 static int curl_calls_cnt{};
 
 void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
-    aids::println(stream, "                             [--db <path>] [--dump-db <path>]          ");
-    aids::println(stream, "                             [--blood-pie-chart <path>]                 ");
+    aids::println(stream, "                             [-g N] [--db <path>] [--dump-db <path>]   ");
+    aids::println(stream, "                             [--blood-pie-chart <path>]                ");
 }
 
 int main(int argc, char *argv[]) {
@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
     Maybe<String_View> database_filepath{};
     Maybe<String_View> initial_person{};
     Maybe<String_View> database_output_filepath{};
+    Maybe<size_t> max_gen{};
     
     Args args{argc, argv};
     while (not args.empty()) {
@@ -68,6 +69,13 @@ int main(int argc, char *argv[]) {
                 || 0 == strcmp("--blood_pie_chart", it)) {
             aids::panic("TODO(#15): --blood-pie-chart is not implemented");
         }
+        if (0 == strcmp("-g", it)
+                || 0 == strcmp("--max_generations", it)
+                || 0 == strcmp("--max-generations", it)) {
+            String_View sv = cstr_as_string_view(args.shift());
+            max_gen = sv.as_integer<size_t>();
+            continue;
+        }
     }
 
     if (not initial_person.has_value) {
@@ -87,11 +95,15 @@ int main(int argc, char *argv[]) {
         *phoneBook.hashmap[initial_person_key] = Person{};
     }
 
-    while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD) {
+    size_t current_gen{};
+    constexpr const size_t GEN_LIMIT{1000};
+    while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD && current_gen < max_gen.value_or(GEN_LIMIT)) {
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
         //TODO(#4): Find the date of birth
+
+        current_gen++;
     }
 
     if (database_output_filepath.has_value) {
