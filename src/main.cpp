@@ -24,7 +24,7 @@ static int curl_calls_cnt{};
 void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
     aids::println(stream, "                             [--db <path>] [--dump-db <path>]          ");
-    aids::println(stream, "                             [--blood-pie-chart <path>                 ");
+    aids::println(stream, "                             [--blood-pie-chart <path>]                 ");
 }
 
 int main(int argc, char *argv[]) {

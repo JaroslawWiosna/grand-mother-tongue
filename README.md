@@ -2,6 +2,23 @@
 
 # 👪 grand-mother-tongue  👵   👴
 
+> Provides percentage composition of one's blood in terms of nationality/native language
+
+Have you ever wonder how many languages does your blood speak?
+`grand-mother-tongue` can tell you, if only you know your *Wikidata item*.
+
+Most likely you don't have your own *Wikidata item*. Too bad.
+You can always check out the blood of your favourite nobleman...
+
+## Usage
+
+```console
+usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] 
+                             [--db <path>] [--dump-db <path>]          
+                             [--blood-pie-chart <path>] 
+```
+
+## Example
 
 For example, for: `make -B && ./grand-mother-tongue Q454337` and `MAX_CURL_CALLS = 2000;` (based on 2dd4f45 )
 
