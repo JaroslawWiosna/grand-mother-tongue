@@ -3,6 +3,7 @@ PROJECT_NAME=grand-mother-tongue
 .PHONY: all run format tests clean
 all: $(PROJECT_NAME)
 
+# Taken from https://stackoverflow.com/a/51730966
 src/version.cpp:
 	printf '"%s"' `git describe --tags --always --dirty` | grep -qsf - src/version.cpp \
 	|| printf >src/version.cpp 'const char version[]="%s";\n' `git describe --tags --always --dirty`
