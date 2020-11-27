@@ -10,6 +10,14 @@ Have you ever wonder how many languages does your blood speak?
 Most likely you don't have your own *Wikidata item*. Too bad.
 You can always check out the blood of your favourite nobleman instead...
 
+## This is (0.y.z), so The public API should not be considered stable.
+
+According to https://semver.org/spec/v2.0.0-rc.2.html 
+
+```
+4. Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable.
+```
+
 ## Usage
 
 ```console
