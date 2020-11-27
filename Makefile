@@ -22,4 +22,4 @@ tests:
 	#TODO(#18): No tests written
 
 clean:
-	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME)
+	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME) src/version.cpp
