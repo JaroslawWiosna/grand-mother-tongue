@@ -1,2 +1,3 @@
-Q53449 : Jadwiga of Poland : Unknown : :
-Q53998 : Louis I of Hungary : Unknown : :
+Q53449 : Jadwiga of Poland : pl : Q53998 : Q231166 : 1374 : 1399
+Q53998 : Louis I of Hungary : hu :  :  : 1326 : 1382
+Q231166 : Elizabeth of Bosnia : bs :  :  : 1339 : 1387

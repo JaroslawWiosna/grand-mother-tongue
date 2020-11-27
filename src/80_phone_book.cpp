@@ -132,11 +132,15 @@ PhoneBook parse(aids::String_View filepath) {
         res.hashmap[person.id]->country = {true, line.chop_by_delim(':').trim()};
         res.hashmap[person.id]->father = {true, PersonID{line.chop_by_delim(':').trim()}};
         res.hashmap[person.id]->mother = {true, PersonID{line.chop_by_delim(':').trim()}};
+        res.hashmap[person.id]->birth_year = {true, line.chop_by_delim(':').trim()};
+        res.hashmap[person.id]->death_year = {true, line.chop_by_delim(':').trim()};
 
         res.hashmap[person.id]->name.has_value = ((person.name.unwrap.count == 0) ? false : true);
         res.hashmap[person.id]->country.has_value = ((person.country.unwrap.count == 0) ? false : true);
         res.hashmap[person.id]->father.has_value = ((person.father.unwrap.value.count == 0) ? false : true);
         res.hashmap[person.id]->mother.has_value = ((person.mother.unwrap.value.count == 0) ? false : true);
+        res.hashmap[person.id]->birth_year.has_value = ((person.birth_year.unwrap.count == 0) ? false : true);
+        res.hashmap[person.id]->death_year.has_value = ((person.death_year.unwrap.count == 0) ? false : true);
     }
     return res;
 }
@@ -176,6 +180,85 @@ int PhoneBook::find_names_in_wikidata() {
     return resps.size();
 }
 
+int PhoneBook::find_birth_year() {
+    using aids::operator""_sv;
+
+    RestApiUrlRequests reqs{};
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.birth_year.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_birth_year(key))});
+            }
+        }
+    }
+    auto resps = request(reqs);
+
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.birth_year.has_value) {
+                std::string url_of_get_birth = to_stdstring(url_of_get_birth_year(key));
+                auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_birth == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_birth_year((*it).res.value());
+                    if (result.has_value) {
+                        while (result.unwrap.count > 0 && not isdigit(result.unwrap.data[0])) {
+                            result.unwrap.chop(1);
+                        }
+                        auto chopped_year = result.unwrap.chop_by_delim('-');
+                        value.birth_year = {true, chopped_year};
+                        aids::println(stderr, "[FOUND BIRTH YEAR]    *", value.birth_year.value_or(""_sv), "\t", value.name.unwrap);
+                    }
+                }
+            }
+        }
+    }
+    return resps.size();    
+}
+
+int PhoneBook::find_death_year() {
+    using aids::operator""_sv;
+
+    RestApiUrlRequests reqs{};
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.death_year.has_value) {
+                reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_death_year(key))});
+            }
+        }
+    }
+    auto resps = request(reqs);
+
+    for (size_t i = 0; i < hashmap.capacity; ++i) {
+        if (hashmap.buckets[i].has_value) {
+            auto &key = hashmap.buckets[i].unwrap.key;
+            auto &value = hashmap.buckets[i].unwrap.value;
+            if (not value.death_year.has_value) {
+                std::string url_of_get_death = to_stdstring(url_of_get_death_year(key));
+                auto it = std::find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_death == r.url;});
+                if (it != resps.end()) {
+                    auto result = extract_death_year((*it).res.value());
+                    if (result.has_value) {
+                        while (result.unwrap.count > 0 && not isdigit(result.unwrap.data[0])) {
+                            result.unwrap.chop(1);
+                        }
+                        auto chopped_year = result.unwrap.chop_by_delim('-');
+                        value.death_year = {true, chopped_year};
+                        aids::println(stderr, "[FOUND DEATH YEAR]    +", value.death_year.value_or(""_sv), "\t", value.name.unwrap);
+                    }
+                }
+            }
+        }
+    }
+    return resps.size();    
+}
+
+
 int PhoneBook::find_native_tongue_in_wikidata() {
     using aids::operator""_sv;
 
@@ -202,7 +285,7 @@ int PhoneBook::find_native_tongue_in_wikidata() {
                     auto result = extract_native((*it).res.value());
                     if (result.has_value) {
                         value.country = {true, {result.unwrap}};
-                        aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv));
+                        aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv), "\t", value.name.unwrap);
                     }
                 }
             }
@@ -323,7 +406,10 @@ void PhoneBook::dump(aids::String_View filepath) {
             aids::println(file, key.value, " : ", value.name.value_or("NN"_sv),
                     " : ", value.country.value_or(""_sv),
                     " : ", value.father.has_value ? value.father.unwrap.value : ""_sv,
-                    " : ", value.mother.has_value ? value.mother.unwrap.value : ""_sv);
+                    " : ", value.mother.has_value ? value.mother.unwrap.value : ""_sv,
+                    " : ", value.birth_year.value_or(""_sv),
+                    " : ", value.death_year.value_or(""_sv)
+            );
         }
     }
 }
