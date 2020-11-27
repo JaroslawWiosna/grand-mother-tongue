@@ -51,8 +51,11 @@ int main(int argc, char *argv[]) {
             return 0;
         }        
         if (0 == strcmp("--db", it)) {
-            database_filepath = {true, cstr_as_string_view(args.shift())};
-            //TODO(#6): Crash add if database_filepath doesn't exist.
+            char *it = args.shift();
+            if (not file_exists(it)) {
+                aids::panic(it, " does not exist");
+            }
+            database_filepath = {true, cstr_as_string_view(it)};
             continue;
         }
         if (0 == strcmp("-i", it)) {
