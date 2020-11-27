@@ -300,10 +300,22 @@ int PhoneBook::find_parents_in_wikidata() {
     return resps.size();
 }
 
-void PhoneBook::dump(std::string filepath) {
+void PhoneBook::dump(aids::String_View filepath) {
     using aids::operator""_sv;
+    const size_t size{filepath.count + 1};
+    char *buf = (char*)malloc(filepath.count + 1);
+    assert(buf);
+    defer(free(buf));
+    memset(buf, 0, size);
+    memcpy(buf, filepath.data, size);
 
-    FILE* file = fopen(filepath.c_str(), "w+");
+    FILE* file = fopen(buf, "w+");
+    if (nullptr == file) {
+        aids::println(stderr, "Failed to open file `", buf, "`: ", strerror(errno));
+        aids::println(stderr, "Database will not be dumped.");
+        return;
+    }
+    defer(fclose(file));
     for (size_t i = 0; i < hashmap.capacity; ++i) {
         if (hashmap.buckets[i].has_value) {
             auto &key = hashmap.buckets[i].unwrap.key;
@@ -314,5 +326,4 @@ void PhoneBook::dump(std::string filepath) {
                     " : ", value.mother.has_value ? value.mother.unwrap.value : ""_sv);
         }
     }
-    fclose(file);
 }

@@ -20,7 +20,7 @@ struct PhoneBook {
     int find_native_tongue_in_wikidata();
     int find_names_in_wikidata();
     int find_parents_in_wikidata();
-    void dump(std::string filepath);
+    void dump(aids::String_View);
 };
 
 PhoneBook parse(aids::String_View filepath);
