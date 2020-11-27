@@ -104,7 +104,8 @@ int main(int argc, char *argv[]) {
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
-        //TODO(#4): Find the date of birth
+        curl_calls_cnt += phoneBook.find_birth_year();
+        curl_calls_cnt += phoneBook.find_death_year();
 
         current_gen++;
     }

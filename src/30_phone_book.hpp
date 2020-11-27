@@ -20,6 +20,8 @@ struct PhoneBook {
     int find_native_tongue_in_wikidata();
     int find_names_in_wikidata();
     int find_parents_in_wikidata();
+    int find_birth_year();
+    int find_death_year();
     void dump(aids::String_View);
 };
 

@@ -65,4 +65,6 @@ struct Person {
     aids::Maybe<aids::String_View> country{};
     aids::Maybe<PersonID> father{};
     aids::Maybe<PersonID> mother{};
+    aids::Maybe<aids::String_View> birth_year{};
+    aids::Maybe<aids::String_View> death_year{};
 };
