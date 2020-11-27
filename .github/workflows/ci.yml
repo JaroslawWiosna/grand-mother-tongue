@@ -65,7 +65,7 @@ jobs:
       uses: vmactions/freebsd-vm@v0.0.9
       with:
         usesh: true
-        prepare: pkg install -y ftp/curl
+        prepare: pkg install -y git ftp/curl
         run: |
           freebsd-version
           make -B 
