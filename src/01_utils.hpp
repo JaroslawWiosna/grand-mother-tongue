@@ -82,3 +82,9 @@ std::string to_stdstring(aids::String_View sv) {
     assert(strlen(buf) < 500);
     return std::string{buf};
 }
+
+bool file_exists(char *path) {
+    FILE *f = fopen(path, "r");
+    defer(if (f) fclose(f));
+    return f;
+}

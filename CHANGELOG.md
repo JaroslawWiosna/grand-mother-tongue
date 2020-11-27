@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - (#14) `--dump-db <path>` dumps to `<path>` instead to the `dumped.txt`
+- (#6) Crash if `<path>` does not exist in `--db <path>`
 
 ## [0.3.0] - 2020-11-26
 ### Added
