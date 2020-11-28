@@ -98,6 +98,7 @@ void PhoneBook::print_origin_by_blood(PersonID id) {
     using aids::operator""_sv;
 
     auto res = origin_by_blood(id);
+    defer(destroy(res.map));
     aids::println(stdout, "<< ORIGIN BY BLOOD >>");
     for (size_t i = 0; i < res.map.capacity; ++i) {
         if (res.map.buckets[i].has_value) {
