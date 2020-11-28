@@ -25,7 +25,7 @@ static int curl_calls_cnt{};
 void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
     aids::println(stream, "                             [-g N] [--db <path>] [--dump-db <path>]   ");
-    aids::println(stream, "                             [--blood-pie-chart <path>]                ");
+    aids::println(stream, "                             [--blood-plot <path>]");
 }
 
 int main(int argc, char *argv[]) {
@@ -69,8 +69,10 @@ int main(int argc, char *argv[]) {
             database_output_filepath = {true, cstr_as_string_view(args.shift())};
             continue;
         }
-        if (0 == strcmp("--blood-pie-chart", it)
-                || 0 == strcmp("--blood_pie_chart", it)) {
+        if (0 == strcmp("--blood-plot", it)
+                || 0 == strcmp("--blood_plot", it)) {
+            //TODO: Unhardcode `--blood-plot` output file
+            //      The current output file is `output.png`
             blood_pie_chart_output_filepath = {true, cstr_as_string_view(args.shift())};
         }
         if (0 == strcmp("-g", it)
@@ -118,17 +120,41 @@ int main(int argc, char *argv[]) {
     phoneBook.print_origin_by_blood(initial_person_key);
 
     if (blood_pie_chart_output_filepath.has_value) {
-        //TODO(#15): --blood-pie-chart is not implemented 
+        using aids::operator""_sv;
+
+        auto res = phoneBook.origin_by_blood(initial_person_key);
+        defer(destroy(res.map));
+        {
+            FILE* file = fopen("data.dat", "w+");
+            if (nullptr == file) {
+                aids::panic("Failed to open file `data.dat`: ", strerror(errno));            
+            }
+            defer(fclose(file));
+
+            size_t data_entry_cnt{};
+            for (size_t i = 0; i < res.map.capacity; ++i) {
+                if (res.map.buckets[i].has_value) {
+                    auto &key = res.map.buckets[i].unwrap.key;
+                    auto &value = res.map.buckets[i].unwrap.value;
+                    aids::println(file, data_entry_cnt++, " ", res.map.buckets[i].unwrap.key, " ", (float)res.map.buckets[i].unwrap.value);
+                }
+            }
+        }
+
         FILE *gnuplot = popen("gnuplot -p", "w");
+        // TODO: bars in histogram are not labelled by value
+        //       https://stackoverflow.com/questions/43715496/gnuplot-histogram-label-values
         const   char* const gnuplot_cmds[] = {
         "reset\n",
         "set term png\n",
         "set output 'output.png'\n",
-        "set boxwidth 0.5\n", 
+        "set boxwidth 0.5\n",
+        "set datafile separator whitespace\n", 
         "set style fill solid\n",
+        "set zeroaxis\n",
         "plot 'data.dat' using 1:3:xtic(2) with boxes\n"
         };
-        const size_t gnuplot_cmds_cnt{6};
+        const size_t gnuplot_cmds_cnt{8};
         for (size_t i = 0; i < gnuplot_cmds_cnt; ++i) {
             fprintf(gnuplot, "%s \n", gnuplot_cmds[i]);
         }
