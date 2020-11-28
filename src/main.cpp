@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
         }
 
         FILE *gnuplot = popen("gnuplot -p", "w");
-        // TODO: bars in histogram are not labelled by value
+        // TODO(#33): bars in histogram are not labelled by value
         //       https://stackoverflow.com/questions/43715496/gnuplot-histogram-label-values
         const   char* const gnuplot_cmds[] = {
         "reset\n",
