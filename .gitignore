@@ -4,3 +4,7 @@ grand-mother-tongue
 src/version.cpp
 
 dumped.txt
+data.dat
+
+*.png
+
