@@ -1,0 +1,25 @@
+{
+  "claims": {
+    "P25": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P25",
+          "hash": "46f5d569a588e8bc1c4650fd1a851c4e557dad83",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 231166,
+              "id": "Q231166"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "q53449$9011EA0E-6DE0-406B-954D-67AE599F93F3",
+        "rank": "normal"
+      }
+    ]
+  }
+}
