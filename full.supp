@@ -1,0 +1,323 @@
+{
+   curl_global_init-PR_NewMonitor
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewMonitor
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl-GetUniqueIndentity
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_GetUniqueIdentity
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_multi_perform
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl_global_init-PR_NewLock
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock15
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock14
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock13
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock12
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock11
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   newlock10
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl9
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl8
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl7
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewMonitor
+   fun:PR_NewNamedMonitor
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl6a
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   NewLock6
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl-newlock6a
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl5
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   NewLock4
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   NewMonitor3
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewMonitor
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl-NSS_InitContent-NewLock
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewLock
+   obj:/usr/lib64/libnss3.so
+   fun:PR_CallOnce
+   obj:/usr/lib64/libnss3.so
+   fun:NSS_InitContext
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+   obj:/usr/lib64/libcurl.so.4.3.0
+}
+{
+   global-init-1
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   curl1
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
+{
+   NewMonitor2
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:PR_NewMonitor
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libnspr4.so
+   obj:/usr/lib64/libcurl.so.4.3.0
+   fun:curl_global_init
+   fun:_Z7requestSt6vectorI17RestApiUrlRequestSaIS0_EE
+   fun:_ZN9PhoneBook24find_parents_in_wikidataEv
+   fun:main
+}
