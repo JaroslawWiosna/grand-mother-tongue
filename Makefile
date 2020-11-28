@@ -1,6 +1,6 @@
 PROJECT_NAME=grand-mother-tongue
 
-.PHONY: all run format tests clean
+.PHONY: all run format tests valgrind valgrind-full clean
 all: $(PROJECT_NAME)
 
 # Taken from https://stackoverflow.com/a/51730966
@@ -20,6 +20,13 @@ format:
 
 tests:
 	#TODO(#18): No tests written
+
+valgrind:
+	#TODO(#31): Unhardcode path to valgrind
+	/opt/rh/devtoolset-7/root/usr/bin/valgrind --leak-check=full ./grand-mother-tongue -g 1 -i Q53449
+
+valgrind-full: full.supp
+	/opt/rh/devtoolset-7/root/usr/bin/valgrind --leak-check=full --show-leak-kinds=all --suppressions=full.supp ./grand-mother-tongue -g 1 -i Q53449
 
 clean:
 	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME) src/version.cpp
