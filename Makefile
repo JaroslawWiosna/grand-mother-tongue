@@ -22,7 +22,7 @@ tests:
 	#TODO(#18): No tests written
 
 valgrind:
-	#TODO: Unhardcode path to valgrind
+	#TODO(#31): Unhardcode path to valgrind
 	/opt/rh/devtoolset-7/root/usr/bin/valgrind --leak-check=full ./grand-mother-tongue -g 1 -i Q53449
 
 valgrind-full: full.supp
