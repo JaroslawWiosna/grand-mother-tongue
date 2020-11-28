@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
         }
         if (0 == strcmp("--blood-plot", it)
                 || 0 == strcmp("--blood_plot", it)) {
-            //TODO: Unhardcode `--blood-plot` output file
+            //TODO(#32): Unhardcode `--blood-plot` output file
             //      The current output file is `output.png`
             blood_pie_chart_output_filepath = {true, cstr_as_string_view(args.shift())};
         }
