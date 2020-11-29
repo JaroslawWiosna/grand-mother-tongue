@@ -16,6 +16,35 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
     if ("P22"_sv == property) {
         auto query = ".claims.P22[0].mainsnak.datavalue.value.id";
 
+        size_t size = 64 * 1024;
+        char *json = new char[size];
+        memset((void *)json, '\0', size);
+        memcpy(json, content.data, content.count);
+        defer(delete[] json);
+
+        struct json_value_s *root = json_parse(json, strlen(json));
+        assert(root != NULL);
+        defer(free(root));
+        struct json_object_s *object = json_value_as_object(root);
+        assert(object != NULL);
+        assert(object->length == 1);
+
+        struct json_object_element_s *obj1 = object->start;
+        struct json_string_s *obj1_name = obj1->name;
+        while (obj1 && 0 != strcmp(obj1_name->string, "claims")) {
+            obj1 = obj1->next;
+        }
+        assert(0 == strcmp(obj1_name->string, "claims"));
+
+        struct json_object_s *ob2 = json_value_as_object(obj1->value);
+        struct json_object_element_s *obj2 = ob2->start;
+        struct json_string_s *obj2_name = obj2->name;
+        while (obj2 && 0 != strcmp(obj2_name->string, "P22")) {
+            obj2 = obj2->next;
+        }
+        assert(0 == strcmp(obj2_name->string, "P22"));
+ 
+ 
     }
     return {};
 }
