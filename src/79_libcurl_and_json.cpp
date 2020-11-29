@@ -6,6 +6,20 @@
 #include <cassert>
 #include <cstring>
 
+// cat $1 | jq .claims.P22[0].mainsnak.datavalue.value.id
+// cat $1 | jq .claims.P25[0].mainsnak.datavalue.value.id
+// cat $1 | jq .claims.P569[0].mainsnak.datavalue.value.time
+// cat $1 | jq .claims.P570[0].mainsnak.datavalue.value.time
+aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_View property) {
+    using aids::operator""_sv;
+
+    if ("P22"_sv == property) {
+        auto query = ".claims.P22[0].mainsnak.datavalue.value.id";
+
+    }
+    return {};
+}
+
 aids::Maybe<aids::String_View> extract_p22_or_p25(std::string content) {
     size_t size = 64 * 1024;
     char *json = new char[size];
