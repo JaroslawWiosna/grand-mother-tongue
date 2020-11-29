@@ -30,21 +30,66 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         assert(object->length == 1);
 
         struct json_object_element_s *obj1 = object->start;
-        struct json_string_s *obj1_name = obj1->name;
-        while (obj1 && 0 != strcmp(obj1_name->string, "claims")) {
+        // struct json_string_s *obj1_name = obj1->name;
+        while (obj1 && 0 != strcmp(obj1->name->string, "claims")) {
             obj1 = obj1->next;
         }
-        assert(0 == strcmp(obj1_name->string, "claims"));
+        assert(0 == strcmp(obj1->name->string, "claims"));
 
         struct json_object_s *ob2 = json_value_as_object(obj1->value);
         struct json_object_element_s *obj2 = ob2->start;
-        struct json_string_s *obj2_name = obj2->name;
-        while (obj2 && 0 != strcmp(obj2_name->string, "P22")) {
+        // struct json_string_s *obj2_name = obj2->name;
+        while (obj2 && 0 != strcmp(obj2->name->string, "P22")) {
             obj2 = obj2->next;
         }
-        assert(0 == strcmp(obj2_name->string, "P22"));
- 
- 
+        assert(0 == strcmp(obj2->name->string, "P22"));
+
+        struct json_array_s *ar3 = json_value_as_array(obj2->value);    
+        struct json_object_element_s *obj4 =
+                json_value_as_object(ar3->start->value)->start;
+
+        // struct json_object_s *ob4 = json_value_as_object(arr3->value);
+        // struct json_object_element_s *obj4 = ob4->start;
+        struct json_string_s *obj4_name = obj4->name;
+        while (obj4 && 0 != strcmp(obj4_name->string, "mainsnak")) {
+            obj4 = obj4->next;
+            aids::println(stdout, obj4->name->string);
+        }
+        assert(0 == strcmp(obj4->name->string, "mainsnak"));
+
+        struct json_object_s *ob5 = json_value_as_object(obj4->value);
+        struct json_object_element_s *obj5 = ob5->start;
+        // struct json_string_s *obj5_name = obj5->name;
+        while (obj5 && 0 != strcmp(obj5->name->string, "datavalue")) {
+            // aids::println(stdout, obj5->name->string);
+            obj5 = obj5->next;
+        }
+        assert(0 == strcmp(obj5->name->string, "datavalue"));
+
+        struct json_object_s *ob6 = json_value_as_object(obj5->value);
+        struct json_object_element_s *obj6 = ob6->start;
+        while (obj6 && 0 != strcmp(obj6->name->string, "value")) {
+            obj6 = obj6->next;
+        }
+        assert(0 == strcmp(obj6->name->string, "value"));
+
+        struct json_object_s *ob7 = json_value_as_object(obj6->value);
+        struct json_object_element_s *obj7 = ob7->start;
+        while (obj7 && 0 != strcmp(obj7->name->string, "id")) {
+            obj7 = obj7->next;
+        }
+        assert(0 == strcmp(obj7->name->string, "id"));
+
+        struct json_string_s *value = json_value_as_string(obj7->value);
+        char *buf = (char*)alloc(&region, 512);
+        memset(buf, 0, 512);
+        aids::String_Buffer sbuffer = {512, buf};
+        aids::sprint(&sbuffer, value->string);
+        assert(strlen(buf) < 500);
+        if (buf[0] != 'Q') {
+            return {};
+        }
+        return {true, {strlen(buf), buf}};
     }
     return {};
 }
