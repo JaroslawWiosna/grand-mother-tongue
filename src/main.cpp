@@ -11,6 +11,7 @@
 #include "75_person.cpp"
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
+#include "98_tests.cpp"
 
 #include <string>
 
@@ -32,6 +33,11 @@ int main(int argc, char *argv[]) {
     // NOTE: this two lines are reverse-sanity check is for static analyzers
     int a;
     a += 42;
+
+#ifdef GRAND_MOTHER_TONGUE_TEST
+    test();
+    return 0;
+#endif
 
     using namespace aids;
     Maybe<String_View> database_filepath{};

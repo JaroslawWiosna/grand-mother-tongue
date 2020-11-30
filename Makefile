@@ -18,8 +18,9 @@ $(PROJECT_NAME): $(wildcard src/*.cpp) $(wildcard src/*.hpp) 3rd_party/aids-patc
 format:	
 	find src/ -iname *.hpp -o -iname *.cpp | xargs /opt/rh/llvm-toolset-7/root/usr/bin/clang-format -i -style=file
 
-tests:
-	#TODO(#18): No tests written
+tests: $(wildcard src/*.cpp) $(wildcard src/*.hpp) 3rd_party/aids-patched.hpp src/version.cpp
+	c++ src/main.cpp -DGRAND_MOTHER_TONGUE_TEST -std=c++17 -ggdb -lcurl -o $(PROJECT_NAME)-tests
+	./$(PROJECT_NAME)-tests
 
 valgrind:
 	#TODO(#31): Unhardcode path to valgrind
@@ -29,4 +30,4 @@ valgrind-full: full.supp
 	/opt/rh/devtoolset-7/root/usr/bin/valgrind --leak-check=full --show-leak-kinds=all --suppressions=full.supp ./grand-mother-tongue -g 1 -i Q53449
 
 clean:
-	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME) src/version.cpp
+	rm -rf 3rd_party/aids-patched.hpp $(PROJECT_NAME) $(PROJECT_NAME)-tests src/version.cpp
