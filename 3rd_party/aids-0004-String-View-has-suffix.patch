@@ -1,0 +1,17 @@
+diff --git a/3rd_party/aids.hpp b/3rd_party/aids.hpp
+index d2529fb..b93417e 100644
+--- a/3rd_party/aids-patched.hpp
++++ b/3rd_party/aids-patched.hpp
+@@ -405,6 +405,12 @@ namespace aids
+                 && this->subview(0, prefix.count) == prefix;
+         }
+ 
++        bool has_suffix(String_View suffix) const
++        {
++            return suffix.count <= this->count
++                && this->subview(count - suffix.count, suffix.count) == suffix;
++        }
++
+         size_t count_chars(char x) const
+         {
+             size_t result = 0;

@@ -7,7 +7,7 @@
 #include <cstring>
 
 
-aids::Maybe<aids::String_View> extract_based_on_query(aids::String_View content, aids::String_View property) {
+aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_View property) {
     using aids::operator""_sv;
 
     if ("P22"_sv == property) {
@@ -32,12 +32,17 @@ aids::Maybe<aids::String_View> extract_based_on_query(aids::String_View content,
             auto word = query.chop_by_delim('.');
             aids::println(stdout, word);
 
-            if (word == "P22[0]"_sv) {
+            if (word.has_suffix("[0]"_sv)) {
+                word.count -= 3;
+                char word_buf[512] = {0};
+                aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
+                aids::sprint(&sbuffer, word);
+
                 wobj = wob->start;
-                while (wobj && 0 != strcmp(wobj->name->string, "P22")) {
+                while (wobj && 0 != strcmp(wobj->name->string, word_buf)) {
                     wobj = wobj->next;
                 }
-                assert(0 == strcmp(wobj->name->string, "P22"));
+                assert(0 == strcmp(wobj->name->string, word_buf));
 
                 struct json_array_s *arr = json_value_as_array(wobj->value);    
                 json_object_element_s *wobj =
@@ -82,87 +87,6 @@ aids::Maybe<aids::String_View> extract_based_on_query(aids::String_View content,
 // cat $1 | jq .claims.P25[0].mainsnak.datavalue.value.id
 // cat $1 | jq .claims.P569[0].mainsnak.datavalue.value.time
 // cat $1 | jq .claims.P570[0].mainsnak.datavalue.value.time
-aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_View property) {
-    using aids::operator""_sv;
-
-    if ("P22"_sv == property) {
-        auto query = ".claims.P22[0].mainsnak.datavalue.value.id";
-
-        size_t size = 64 * 1024;
-        char *json = new char[size];
-        memset((void *)json, '\0', size);
-        memcpy(json, content.data, content.count);
-        defer(delete[] json);
-
-        struct json_value_s *root = json_parse(json, strlen(json));
-        assert(root != NULL);
-        defer(free(root));
-        struct json_object_s *object = json_value_as_object(root);
-        assert(object != NULL);
-        assert(object->length == 1);
-
-        struct json_object_element_s *obj1 = object->start;
-        while (obj1 && 0 != strcmp(obj1->name->string, "claims")) {
-            obj1 = obj1->next;
-        }
-        assert(0 == strcmp(obj1->name->string, "claims"));
-
-        struct json_object_s *ob2 = json_value_as_object(obj1->value);
-        struct json_object_element_s *obj2 = ob2->start;
-        // struct json_string_s *obj2_name = obj2->name;
-        while (obj2 && 0 != strcmp(obj2->name->string, "P22")) {
-            obj2 = obj2->next;
-        }
-        assert(0 == strcmp(obj2->name->string, "P22"));
-
-        struct json_array_s *ar3 = json_value_as_array(obj2->value);    
-        struct json_object_element_s *obj4 =
-                json_value_as_object(ar3->start->value)->start;
-
-        // struct json_object_s *ob4 = json_value_as_object(arr3->value);
-        // struct json_object_element_s *obj4 = ob4->start;
-        struct json_string_s *obj4_name = obj4->name;
-        while (obj4 && 0 != strcmp(obj4_name->string, "mainsnak")) {
-            obj4 = obj4->next;
-            aids::println(stdout, obj4->name->string);
-        }
-        assert(0 == strcmp(obj4->name->string, "mainsnak"));
-
-        struct json_object_s *ob5 = json_value_as_object(obj4->value);
-        struct json_object_element_s *obj5 = ob5->start;
-        // struct json_string_s *obj5_name = obj5->name;
-        while (obj5 && 0 != strcmp(obj5->name->string, "datavalue")) {
-            obj5 = obj5->next;
-        }
-        assert(0 == strcmp(obj5->name->string, "datavalue"));
-
-        struct json_object_s *ob6 = json_value_as_object(obj5->value);
-        struct json_object_element_s *obj6 = ob6->start;
-        while (obj6 && 0 != strcmp(obj6->name->string, "value")) {
-            obj6 = obj6->next;
-        }
-        assert(0 == strcmp(obj6->name->string, "value"));
-
-        struct json_object_s *ob7 = json_value_as_object(obj6->value);
-        struct json_object_element_s *obj7 = ob7->start;
-        while (obj7 && 0 != strcmp(obj7->name->string, "id")) {
-            obj7 = obj7->next;
-        }
-        assert(0 == strcmp(obj7->name->string, "id"));
-
-        struct json_string_s *value = json_value_as_string(obj7->value);
-        char *buf = (char*)alloc(&region, 512);
-        memset(buf, 0, 512);
-        aids::String_Buffer sbuffer = {512, buf};
-        aids::sprint(&sbuffer, value->string);
-        assert(strlen(buf) < 500);
-        if (buf[0] != 'Q') {
-            return {};
-        }
-        return {true, {strlen(buf), buf}};
-    }
-    return {};
-}
 
 aids::Maybe<aids::String_View> extract_p22_or_p25(std::string content) {
     size_t size = 64 * 1024;
