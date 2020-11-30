@@ -8,7 +8,7 @@ void test() {
         aids::panic("No such file `../wikidata-json-examples/Q53449_P22.json`");
     }    
 
-    auto result = extract(Q53449_P22.unwrap, "P22"_sv);
+    auto result = extract_based_on_query(Q53449_P22.unwrap, "P22"_sv);
     assert("Q53998"_sv == result.unwrap);
 
     aids::println(stdout, "All good");
