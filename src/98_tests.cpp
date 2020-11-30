@@ -27,7 +27,9 @@ void test() {
         }    
 
         auto result = extract(Q53449_P569.unwrap, "P569"_sv);
-        assert("+1374-02-18T00:00:00Z"_sv == result.unwrap);
+        if (not ("+1374-02-18T00:00:00Z"_sv == result.unwrap)) {
+            aids::panic("+1374-02-18T00:00:00Z"_sv, " != ", result.unwrap);
+        }
     }    
     {
         auto Q53449_P570 = aids::read_file_as_string_view("./wikidata-json-examples/Q53449_P570.json");

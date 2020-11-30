@@ -10,52 +10,40 @@
 aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_View property) {
     using aids::operator""_sv;
 
+    aids::String_View query{};
     if ("P22"_sv == property) {
-        auto query = "claims.P22[0].mainsnak.datavalue.value.id"_sv;
+        query = "claims.P22[0].mainsnak.datavalue.value.id"_sv;
+    } else if ("P25"_sv == property) {
+        query = "claims.P25[0].mainsnak.datavalue.value.id"_sv;
+    } else if ("P569"_sv == property) {
+        query = "claims.P569[0].mainsnak.datavalue.value.time"_sv;
+    } else if ("P570"_sv == property) {
+        query = "claims.P570[0].mainsnak.datavalue.value.time"_sv;
+    } else {
+        aids::panic("Property `", property, "` not recognized");
+    }        
 
-        size_t size = 64 * 1024;
-        char *json = new char[size];
-        memset((void *)json, '\0', size);
-        memcpy(json, content.data, content.count);
-        defer(delete[] json);
 
-        struct json_value_s *root = json_parse(json, strlen(json));
-        assert(root != NULL);
-        defer(free(root));
-        struct json_object_s *object = json_value_as_object(root);
-        assert(object != NULL);
-        assert(object->length == 1);
+    size_t size = 64 * 1024;
+    char *json = new char[size];
+    memset((void *)json, '\0', size);
+    memcpy(json, content.data, content.count);
+    defer(delete[] json);
 
-        struct json_object_s *wob = nullptr;
-        struct json_object_element_s *wobj = nullptr;
-        while (0 != query.count) {
-            auto word = query.chop_by_delim('.');
+    struct json_value_s *root = json_parse(json, strlen(json));
+    assert(root != NULL);
+    defer(free(root));
+    struct json_object_s *object = json_value_as_object(root);
+    assert(object != NULL);
+    assert(object->length == 1);
 
-            if (word.has_suffix("[0]"_sv)) {
-                word.count -= 3;
-                char word_buf[512] = {0};
-                aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
-                aids::sprint(&sbuffer, word);
+    struct json_object_s *wob = nullptr;
+    struct json_object_element_s *wobj = nullptr;
+    while (0 != query.count) {
+        auto word = query.chop_by_delim('.');
 
-                wobj = wob->start;
-                while (wobj && 0 != strcmp(wobj->name->string, word_buf)) {
-                    wobj = wobj->next;
-                }
-                assert(0 == strcmp(wobj->name->string, word_buf));
-
-                struct json_array_s *arr = json_value_as_array(wobj->value);    
-                json_object_element_s *wobj =
-                        json_value_as_object(arr->start->value)->start;
-                wob = json_value_as_object(wobj->value);
-                auto word = query.chop_by_delim('.');
-                continue;
-            }
-
-            if (not wob) { 
-                wob = object;
-            };
-            wobj = wob->start;
-
+        if (word.has_suffix("[0]"_sv)) {
+            word.count -= 3;
             char word_buf[512] = {0};
             aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
             aids::sprint(&sbuffer, word);
@@ -65,21 +53,39 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
                 wobj = wobj->next;
             }
             assert(0 == strcmp(wobj->name->string, word_buf));
-            wob = json_value_as_object(wobj->value);
 
+            struct json_array_s *arr = json_value_as_array(wobj->value);    
+            json_object_element_s *wobj =
+                    json_value_as_object(arr->start->value)->start;
+            wob = json_value_as_object(wobj->value);
+            auto word = query.chop_by_delim('.');
+            continue;
         }
-        struct json_string_s *value = json_value_as_string(wobj->value);
-        char *buf = (char*)alloc(&region, 512);
-        memset(buf, 0, 512);
-        aids::String_Buffer sbuffer = {512, buf};
-        aids::sprint(&sbuffer, value->string);
-        assert(strlen(buf) < 500);
-        if (buf[0] != 'Q') {
-            return {};
+
+        if (not wob) { 
+            wob = object;
+        };
+        wobj = wob->start;
+
+        char word_buf[512] = {0};
+        aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
+        aids::sprint(&sbuffer, word);
+
+        wobj = wob->start;
+        while (wobj && 0 != strcmp(wobj->name->string, word_buf)) {
+            wobj = wobj->next;
         }
-        return {true, {strlen(buf), buf}};
+        assert(0 == strcmp(wobj->name->string, word_buf));
+        wob = json_value_as_object(wobj->value);
+
     }
-    return {};
+    struct json_string_s *value = json_value_as_string(wobj->value);
+    char *buf = (char*)alloc(&region, 512);
+    memset(buf, 0, 512);
+    aids::String_Buffer sbuffer = {512, buf};
+    aids::sprint(&sbuffer, value->string);
+    assert(strlen(buf) < 500);
+    return {true, {strlen(buf), buf}};
 }
 
 // cat $1 | jq .claims.P22[0].mainsnak.datavalue.value.id
