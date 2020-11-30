@@ -254,23 +254,6 @@ aids::Maybe<aids::String_View> extract_native(std::string content) {
     return {true, {strlen(buf), buf}};
 }
 
-aids::Maybe<PersonID> get_property_(PersonID key, std::string property) {
-    char buf[512] = {0};
-    aids::String_Buffer sbuffer = {sizeof(buf), buf};
-    aids::sprint(&sbuffer,
-            "https://www.wikidata.org/w/",
-            "api.php?action=wbgetclaims&format=json&entity=",
-            key.value,
-            "&property=",
-            property.c_str());
-    auto content = get_via_libcurl(buf);
-    auto result = extract_p22(content.value());
-    if (result.has_value && result.unwrap.data[0] == 'Q') {
-        return {true, PersonID{result.unwrap}};
-    }
-    return {};
-}
-
 aids::Maybe<PersonID> get_father(PersonID key) {
     char buf[512] = {0};
     aids::String_Buffer sbuffer = {sizeof(buf), buf};
