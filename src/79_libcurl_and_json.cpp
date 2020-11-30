@@ -19,6 +19,8 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         query = "claims.P569[0].mainsnak.datavalue.value.time"_sv;
     } else if ("P570"_sv == property) {
         query = "claims.P570[0].mainsnak.datavalue.value.time"_sv;
+    } else if ("name"_sv == property) {
+        query = "search[0].label"_sv;
     } else {
         aids::panic("Property `", property, "` not recognized");
     }        
@@ -130,6 +132,17 @@ aids::Maybe<aids::String_View> extract_death_year(std::string content) {
     return extract({strlen(buf), buf}, "P570"_sv);}
 
 aids::Maybe<aids::String_View> extract_name(std::string content) {
+    using aids::operator""_sv;
+
+#if 0
+
+    char *buf = (char*)alloc(&region, 4096);
+    memset(buf, 0, 4096);
+    aids::String_Buffer sbuffer = {4096, buf};
+    aids::sprint(&sbuffer, content.c_str());
+    return extract({strlen(buf), buf}, "name"_sv);
+#endif
+
     size_t size = 64 * 1024;
     char *json = new char[size];
     memset((void *)json, '\0', size);

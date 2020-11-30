@@ -1,0 +1,25 @@
+{
+  "searchinfo": {
+    "search": "Q53449"
+  },
+  "search": [
+    {
+      "id": "Q53449",
+      "title": "Q53449",
+      "pageid": 55911,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q53449",
+      "concepturi": "http://www.wikidata.org/entity/Q53449",
+      "label": "Jadwiga of Poland",
+      "description": "Queen Regnant who became King",
+      "match": {
+        "type": "entityId",
+        "text": "Q53449"
+      },
+      "aliases": [
+        "Q53449"
+      ]
+    }
+  ],
+  "success": 1
+}
