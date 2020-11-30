@@ -30,7 +30,6 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         struct json_object_element_s *wobj = nullptr;
         while (0 != query.count) {
             auto word = query.chop_by_delim('.');
-            aids::println(stdout, word);
 
             if (word.has_suffix("[0]"_sv)) {
                 word.count -= 3;
