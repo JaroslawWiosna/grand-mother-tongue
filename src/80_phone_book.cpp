@@ -327,7 +327,7 @@ int PhoneBook::find_parents_in_wikidata() {
                 std::string url_of_get_fathe = to_stdstring(url_of_get_father(key));
                 auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_fathe == r.url;});
                 if (it != resps.end()) {
-                    auto result = extract_p22_or_p25((*it).res.value());
+                    auto result = extract_p22((*it).res.value());
                     if (result.has_value && result.unwrap.data[0] == 'Q') {
                         new_parents[key]->father = {true, PersonID{{result.unwrap}}};
                     }
@@ -337,7 +337,7 @@ int PhoneBook::find_parents_in_wikidata() {
                 std::string url_of_get_mothe = to_stdstring(url_of_get_mother(key));
                 auto it = find_if(resps.begin(), resps.end(), [&](const RestApiUrlResponse &r){return url_of_get_mothe == r.url;});
                 if (it != resps.end()) {
-                    auto result = extract_p22_or_p25((*it).res.value());
+                    auto result = extract_p25((*it).res.value());
                     if (result.has_value && result.unwrap.data[0] == 'Q') {
                         new_parents[key]->mother = {true, PersonID{{result.unwrap}}};
                     }
