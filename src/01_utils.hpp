@@ -88,3 +88,5 @@ bool file_exists(char *path) {
     defer(if (f) fclose(f));
     return f;
 }
+
+static int verbosity{};

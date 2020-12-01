@@ -26,7 +26,7 @@ static int curl_calls_cnt{};
 void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
     aids::println(stream, "                             [-g N] [--db <path>] [--dump-db <path>]   ");
-    aids::println(stream, "                             [--blood-plot <path>]");
+    aids::println(stream, "                             [--blood-plot <path>] [-v]");
 }
 
 int main(int argc, char *argv[]) {
@@ -86,6 +86,13 @@ int main(int argc, char *argv[]) {
                 || 0 == strcmp("--max-generations", it)) {
             String_View sv = cstr_as_string_view(args.shift());
             max_gen = sv.as_integer<size_t>();
+            continue;
+        }
+        if (0 == strcmp("-v", it)
+                || 0 == strcmp("--verbose", it)) {
+            // auto sv = cstr_as_string_view(args.shift());
+            // verbosity = sv.as_integer<size_t>().unwrap;
+            verbosity = 1;
             continue;
         }
     }

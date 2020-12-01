@@ -172,7 +172,9 @@ int PhoneBook::find_names_in_wikidata() {
                     auto result = extract_name((*it).res.value());
                     if (result.has_value) {
                         value.name = {true, {result.unwrap}};
-                        aids::println(stderr, "[FOUND NAME]          ", value.name.value_or(""_sv));
+                        if (verbosity) {
+                            aids::println(stderr, "[FOUND NAME]          ", value.name.value_or(""_sv));
+                        }
                     }
                 }
             }
@@ -211,7 +213,9 @@ int PhoneBook::find_birth_year() {
                         }
                         auto chopped_year = result.unwrap.chop_by_delim('-');
                         value.birth_year = {true, chopped_year};
-                        aids::println(stderr, "[FOUND BIRTH YEAR]    *", value.birth_year.value_or(""_sv), "\t", value.name.unwrap);
+                        if (verbosity) {
+                            aids::println(stderr, "[FOUND BIRTH YEAR]    *", value.birth_year.value_or(""_sv), "\t", value.name.unwrap);
+                        }
                     }
                 }
             }
@@ -250,7 +254,9 @@ int PhoneBook::find_death_year() {
                         }
                         auto chopped_year = result.unwrap.chop_by_delim('-');
                         value.death_year = {true, chopped_year};
-                        aids::println(stderr, "[FOUND DEATH YEAR]    +", value.death_year.value_or(""_sv), "\t", value.name.unwrap);
+                        if (verbosity) {
+                            aids::println(stderr, "[FOUND DEATH YEAR]    +", value.death_year.value_or(""_sv), "\t", value.name.unwrap);
+                        }
                     }
                 }
             }
@@ -286,7 +292,9 @@ int PhoneBook::find_native_tongue_in_wikidata() {
                     auto result = extract_native((*it).res.value());
                     if (result.has_value) {
                         value.country = {true, {result.unwrap}};
-                        aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv), "\t", value.name.unwrap);
+                        if (verbosity) {
+                            aids::println(stderr, "[FOUND NATIVE TONGUE] ", value.country.value_or(""_sv), "\t", value.name.unwrap);
+                        }
                     }
                 }
             }
@@ -357,25 +365,33 @@ int PhoneBook::find_parents_in_wikidata() {
                 if (not hashmap[key]->father.has_value) {
                     if (value.father.has_value) {
                         hashmap[key]->father = value.father;
-                        aids::println(stderr, "[ADD FATHER]          ", key.value, "'s father is ", value.father.unwrap.value);
+                        if (verbosity) {
+                            aids::println(stderr, "[ADD FATHER]          ", key.value, "'s father is ", value.father.unwrap.value);
+                        }
                     }
                 }
                 if (not hashmap[key]->mother.has_value) {
                     if (value.mother.has_value) {
                         hashmap[key]->mother = value.mother;
-                        aids::println(stderr, "[ADD MOTHER]          ", key.value, "'s mother is ", value.mother.unwrap.value);
+                        if (verbosity) {
+                            aids::println(stderr, "[ADD MOTHER]          ", key.value, "'s mother is ", value.mother.unwrap.value);
+                        }
                     }
                 }
                 if (not contains(value.father)) {
                     if (value.father.has_value) {
                         *hashmap[value.father.unwrap] = Person{};
-                        aids::println(stderr, "[ADD NEW]             ", value.father.unwrap.value);
+                        if (verbosity) {
+                            aids::println(stderr, "[ADD NEW]             ", value.father.unwrap.value);
+                        }
                     }
                 }
                 if (not contains(value.mother)) {
                     if (value.mother.has_value) {
                         *hashmap[value.mother.unwrap] = Person{};
-                        aids::println(stderr, "[ADD NEW]             ", value.mother.unwrap.value);
+                        if (verbosity) {
+                            aids::println(stderr, "[ADD NEW]             ", value.mother.unwrap.value);
+                        }
                     }
                 }
             }
