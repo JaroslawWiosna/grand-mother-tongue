@@ -254,30 +254,6 @@ aids::Maybe<aids::String_View> extract_native(std::string content) {
     return {true, {strlen(buf), buf}};
 }
 
-aids::Maybe<aids::String_View> get_name(PersonID key) {
-    char buf[512] = {0};
-    aids::String_Buffer sbuffer = {sizeof(buf), buf};
-    aids::sprint(&sbuffer,
-            "https://www.wikidata.org/w/",
-            "api.php?action=wbsearchentities",
-            "&search=",
-            key.value,
-            "&language=en&format=json");
-    auto content = get_via_libcurl(buf);
-#if 0
-    if (content.has_value()) {
-        std::cout
-            << "successfuly read json from the Internet by using libcurl\n";
-    } else {
-        std::cout << "libcurl failed :(\n";
-        return {};
-    }
-#endif
-    return extract_name(content.value());
-}
-
-//
-
 aids::String_View url_of_get_father(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
