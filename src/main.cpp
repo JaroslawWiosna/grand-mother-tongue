@@ -120,8 +120,8 @@ int main(int argc, char *argv[]) {
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
-        curl_calls_cnt += phoneBook.find_birth_year();
-        curl_calls_cnt += phoneBook.find_death_year();
+        // curl_calls_cnt += phoneBook.find_birth_year();
+        // curl_calls_cnt += phoneBook.find_death_year();
 
         current_gen++;
     }
@@ -131,6 +131,8 @@ int main(int argc, char *argv[]) {
     }
 
     phoneBook.print_origin_by_blood(initial_person_key);
+
+    phoneBook.ahnentafel(initial_person_key, 4);
 
     if (blood_pie_chart_output_filepath.has_value) {
         using aids::operator""_sv;
