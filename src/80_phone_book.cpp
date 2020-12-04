@@ -464,7 +464,7 @@ void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
         if (i < relation_size) {
             return relation[i];
         } else {
-            return "TODO: get_ralation(i) for i >= 8 is not implemented";
+            return "TODO(#35): get_relation(i) for i >= 8 is not implemented";
         }
     };
 
