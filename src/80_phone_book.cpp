@@ -430,3 +430,45 @@ void PhoneBook::dump(aids::String_View filepath) {
         }
     }
 }
+
+void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
+    aids::Dynamic_Array<PersonID> at{}; // at <-- ahnentafel
+    at.push({}); // push empty
+    at.push(id);
+    int i{2};
+    while(i < (1 << nr_generations)) {
+        if (i % 2 == 0) { // father
+            auto tmp = hashmap[at.data[i >> 1]]->father.unwrap;
+            at.push(tmp);
+        } else { //mother
+            auto tmp = hashmap[at.data[i >> 1]]->mother.unwrap;
+            at.push(tmp);
+        }
+        ++i;
+    }
+    auto get_relation = [](int i){
+        const char *relation[] = {
+            "",
+            "Probant",
+            "father",
+            "mother",
+            "paternal grandfather",
+            "paternal grandmother",
+            "maternal grandfather",
+            "maternal grandmother",
+        };
+        constexpr size_t relation_size = (sizeof(relation) / sizeof(relation[0]));
+        static_assert(8 == relation_size);
+
+        assert(i >= 0);
+        if (i < relation_size) {
+            return relation[i];
+        } else {
+            return "TODO(#35): get_relation(i) for i >= 8 is not implemented";
+        }
+    };
+
+    for (int i{1}; i < at.size; ++i) {
+        aids::println(stdout, i, ".\t", get_relation(i), " ", at.data[i].value);
+    }
+}

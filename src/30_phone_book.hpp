@@ -23,6 +23,8 @@ struct PhoneBook {
     int find_birth_year();
     int find_death_year();
     void dump(aids::String_View);
+
+    void ahnentafel(PersonID, int);
 };
 
 PhoneBook parse(aids::String_View filepath);

@@ -27,6 +27,7 @@ void usage(FILE *stream) {
     aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
     aids::println(stream, "                             [-g N] [--db <path>] [--dump-db <path>]   ");
     aids::println(stream, "                             [--blood-plot <path>] [-v]");
+    aids::println(stream, "                             [--ahnentafel N]");
 }
 
 int main(int argc, char *argv[]) {
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
     Maybe<String_View> database_output_filepath{};
     Maybe<size_t> max_gen{};
     Maybe<String_View> blood_pie_chart_output_filepath{};
+    Maybe<size_t> ahnentafel{};
     
     Args args{argc, argv};
     while (not args.empty()) {
@@ -95,6 +97,13 @@ int main(int argc, char *argv[]) {
             verbosity = 1;
             continue;
         }
+        if (0 == strcmp("--ahnentafel", it)) {
+            String_View sv = cstr_as_string_view(args.shift());
+            auto num = sv.as_integer<size_t>();
+            assert(num.has_value);
+            ahnentafel = {true, num.unwrap};
+            continue;
+        }
     }
 
     if (not initial_person.has_value) {
@@ -120,8 +129,8 @@ int main(int argc, char *argv[]) {
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
-        curl_calls_cnt += phoneBook.find_birth_year();
-        curl_calls_cnt += phoneBook.find_death_year();
+        // curl_calls_cnt += phoneBook.find_birth_year();
+        // curl_calls_cnt += phoneBook.find_death_year();
 
         current_gen++;
     }
@@ -131,6 +140,10 @@ int main(int argc, char *argv[]) {
     }
 
     phoneBook.print_origin_by_blood(initial_person_key);
+
+    if (ahnentafel.has_value) {
+        phoneBook.ahnentafel(initial_person_key, ahnentafel.unwrap);
+    }
 
     if (blood_pie_chart_output_filepath.has_value) {
         using aids::operator""_sv;
