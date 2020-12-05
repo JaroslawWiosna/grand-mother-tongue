@@ -848,7 +848,7 @@ namespace aids
     template <typename ... Types>
     void printr(FILE *stream, Types... args)
     {
-        aids::String_Buffer sbuffer = {sizeof(printr_buf), printr_buf};
+        aids::String_Buffer sbuffer = {sizeof(printr_buf), printr_buf, {}};
         (aids::sprint(&sbuffer, args), ...);
 
         print(stream, String_View{console_width, printr_buf});
