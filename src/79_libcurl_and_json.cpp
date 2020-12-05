@@ -46,7 +46,7 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         if (word.has_suffix("[0]"_sv)) {
             word.count -= 3;
             char word_buf[512] = {0};
-            aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
+            aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf, {}};
             aids::sprint(&sbuffer, word);
 
             wobj = wob->start;
@@ -69,7 +69,7 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         wobj = wob->start;
 
         char word_buf[512] = {0};
-        aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf};
+        aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf, {}};
         aids::sprint(&sbuffer, word);
 
         wobj = wob->start;
@@ -83,7 +83,7 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
     struct json_string_s *value = json_value_as_string(wobj->value);
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer, value->string);
     assert(strlen(buf) < 500);
     return {true, {strlen(buf), buf}};
@@ -99,7 +99,7 @@ aids::Maybe<aids::String_View> extract_p22(std::string content) {
 
     char *buf = (char*)alloc(&region, 4096);
     memset(buf, 0, 4096);
-    aids::String_Buffer sbuffer = {4096, buf};
+    aids::String_Buffer sbuffer = {4096, buf, {}};
     aids::sprint(&sbuffer, content.c_str());
     return extract({strlen(buf), buf}, "P22"_sv);
 }
@@ -109,7 +109,7 @@ aids::Maybe<aids::String_View> extract_p25(std::string content) {
 
     char *buf = (char*)alloc(&region, 4096);
     memset(buf, 0, 4096);
-    aids::String_Buffer sbuffer = {4096, buf};
+    aids::String_Buffer sbuffer = {4096, buf, {}};
     aids::sprint(&sbuffer, content.c_str());
     return extract({strlen(buf), buf}, "P25"_sv);}
 
@@ -118,7 +118,7 @@ aids::Maybe<aids::String_View> extract_birth_year(std::string content) {
 
     char *buf = (char*)alloc(&region, 4096);
     memset(buf, 0, 4096);
-    aids::String_Buffer sbuffer = {4096, buf};
+    aids::String_Buffer sbuffer = {4096, buf, {}};
     aids::sprint(&sbuffer, content.c_str());
     return extract({strlen(buf), buf}, "P569"_sv);}
 
@@ -127,7 +127,7 @@ aids::Maybe<aids::String_View> extract_death_year(std::string content) {
 
     char *buf = (char*)alloc(&region, 4096);
     memset(buf, 0, 4096);
-    aids::String_Buffer sbuffer = {4096, buf};
+    aids::String_Buffer sbuffer = {4096, buf, {}};
     aids::sprint(&sbuffer, content.c_str());
     return extract({strlen(buf), buf}, "P570"_sv);}
 
@@ -182,7 +182,7 @@ aids::Maybe<aids::String_View> extract_name(std::string content) {
 
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer, value->string);
     assert(strlen(buf) < 500);
     return {true, {strlen(buf), buf}};
@@ -248,7 +248,7 @@ aids::Maybe<aids::String_View> extract_native(std::string content) {
 
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer, value->string);
     assert(strlen(buf) < 500);
     return {true, {strlen(buf), buf}};
@@ -257,7 +257,7 @@ aids::Maybe<aids::String_View> extract_native(std::string content) {
 aids::String_View url_of_get_father(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
     key.value,
@@ -270,7 +270,7 @@ aids::String_View url_of_get_father(PersonID key) {
 aids::String_View url_of_get_mother(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
     key.value,
@@ -283,7 +283,7 @@ aids::String_View url_of_get_mother(PersonID key) {
 aids::String_View url_of_get_name(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/",
     "api.php?action=wbsearchentities&search=",
@@ -296,7 +296,7 @@ aids::String_View url_of_get_name(PersonID key) {
 aids::String_View url_of_get_native(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
     key.value,
@@ -309,7 +309,7 @@ aids::String_View url_of_get_native(PersonID key) {
 aids::String_View url_of_get_birth_year(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
     key.value,
@@ -322,7 +322,7 @@ aids::String_View url_of_get_birth_year(PersonID key) {
 aids::String_View url_of_get_death_year(PersonID key) {
     char *buf = (char*)alloc(&region, 512);
     memset(buf, 0, 512);
-    aids::String_Buffer sbuffer = {512, buf};
+    aids::String_Buffer sbuffer = {512, buf, {}};
     aids::sprint(&sbuffer,
     "https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&entity=",
     key.value,
