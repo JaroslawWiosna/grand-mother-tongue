@@ -60,6 +60,7 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
                     json_value_as_object(arr->start->value)->start;
             wob = json_value_as_object(wobj->value);
             auto word = query.chop_by_delim('.');
+            (void)word;
             continue;
         }
 
@@ -236,7 +237,7 @@ aids::Maybe<aids::String_View> extract_native(std::string content) {
         json_value_as_object(p25_elem->value);
     struct json_object_element_s *mainsnak =
         mainsnak_object->start->next->next->next;
-    struct json_string_s *datavalue = mainsnak->name;
+    // struct json_string_s *datavalue = mainsnak->name;
     // std::cout << datavalue->string << "\n";
 
     struct json_object_s *language_object = json_value_as_object(

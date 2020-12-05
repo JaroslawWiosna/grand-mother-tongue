@@ -113,7 +113,7 @@ PhoneBook parse(aids::String_View filepath) {
     PhoneBook res{};
     
     char buf[512] = {0};
-    aids::String_Buffer sbuffer = {sizeof(buf), buf};
+    aids::String_Buffer sbuffer = {sizeof(buf), buf, {}};
     aids::sprint(&sbuffer, filepath);
     auto content = aids::read_file_as_string_view(buf);
     if (not content.has_value) {
@@ -309,12 +309,12 @@ int PhoneBook::find_parents_in_wikidata() {
     bool result = {true};
     aids::Hash_Map<PersonID, Person> new_parents{};
     defer(destroy(new_parents));
-    char buf[512] = {0};
+    // char buf[512] = {0};
     RestApiUrlRequests reqs{};
     for (size_t i = 0; i < hashmap.capacity; ++i) {
         if (hashmap.buckets[i].has_value) {
             auto &key = hashmap.buckets[i].unwrap.key;
-            auto &value = hashmap.buckets[i].unwrap.value;
+            // auto &value = hashmap.buckets[i].unwrap.value;
             if (not hashmap[key]->father.has_value) {
                 reqs.emplace_back(RestApiUrlRequest{to_stdstring(url_of_get_father(key))});
             }
@@ -327,7 +327,7 @@ int PhoneBook::find_parents_in_wikidata() {
     for (size_t i = 0; i < hashmap.capacity; ++i) {
         if (hashmap.buckets[i].has_value) {
             auto &key = hashmap.buckets[i].unwrap.key;
-            auto &value = hashmap.buckets[i].unwrap.value;
+            // auto &value = hashmap.buckets[i].unwrap.value;
             if (key == PersonID{"UN"_sv}) {
                 continue;
             }
@@ -431,12 +431,12 @@ void PhoneBook::dump(aids::String_View filepath) {
     }
 }
 
-void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
+void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
     aids::Dynamic_Array<PersonID> at{}; // at <-- ahnentafel
     at.push({}); // push empty
     at.push(id);
-    int i{2};
-    while(i < (1 << nr_generations)) {
+    size_t i{2};
+    while(i < (size_t)(1 << nr_generations)) {
         if (i % 2 == 0) { // father
             auto tmp = hashmap[at.data[i >> 1]]->father.unwrap;
             at.push(tmp);
@@ -446,7 +446,7 @@ void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
         }
         ++i;
     }
-    auto get_relation = [](int i){
+    auto get_relation = [](size_t i){
         const char *relation[] = {
             "",
             "Probant",
@@ -460,7 +460,6 @@ void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
         constexpr size_t relation_size = (sizeof(relation) / sizeof(relation[0]));
         static_assert(8 == relation_size);
 
-        assert(i >= 0);
         if (i < relation_size) {
             return relation[i];
         } else {
@@ -468,7 +467,7 @@ void PhoneBook::ahnentafel(PersonID id, int nr_generations) {
         }
     };
 
-    for (int i{1}; i < at.size; ++i) {
+    for (size_t i{1}; i < at.size; ++i) {
         aids::println(stdout, i, ".\t", get_relation(i), " ", at.data[i].value);
     }
 }
