@@ -838,13 +838,42 @@ namespace aids
         }
     }
 
+    char printr_buf[500];
+    size_t console_width{10};
+    bool is_printr_buf_clean{};
+
+    void printr(FILE *stream);
+
+
+    template <typename ... Types>
+    void printr(FILE *stream, Types... args)
+    {
+        aids::String_Buffer sbuffer = {sizeof(printr_buf), printr_buf};
+        (aids::sprint(&sbuffer, args), ...);
+
+        print(stream, String_View{console_width, printr_buf});
+        print1(stream, '\r');
+        fflush(stream);
+        is_printr_buf_clean = false;
+    }
+
+    void printr_clean(FILE *stream);
+    void print1(FILE *stream, Pad pad);
+
     template <typename ... Types>
     void println(FILE *stream, Types... args)
     {
+        if (not is_printr_buf_clean) {
+            print1(stream, Pad{console_width, ' '});
+            print1(stream, '\r');
+            fflush(stream);
+        }
         (print1(stream, args), ...);
         print1(stream, '\n');
+        if (not is_printr_buf_clean) {
+            printr(stream);
+        }
     }
-
 
     template <typename... Args>
     [[noreturn]] void panic(Args... args)
@@ -1188,6 +1217,24 @@ namespace aids
             free(hash_map.buckets);
         }
     }
+
+    void printr(FILE *stream)
+    {
+        print(stream, String_View{console_width, printr_buf});
+        print1(stream, '\r');
+        fflush(stream);
+        is_printr_buf_clean = false;
+    }
+
+
+    void printr_clean(FILE *stream) {
+        memset(printr_buf, ' ', console_width);
+        printr(stream);
+        is_printr_buf_clean = true;
+    }
+
 }
+
+
 
 #endif  // AIDS_HPP_

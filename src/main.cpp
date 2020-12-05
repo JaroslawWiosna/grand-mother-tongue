@@ -38,7 +38,28 @@ void usage(FILE *stream) {
     aids::println(stream, "             search-and-do <word>");    
 }
 
-int main(int argc, char *argv[]) {
+#include <unistd.h>
+int main(int argc, char *argv[], char *envp[]) {
+    aids::console_width = 153;
+
+    const int cnt{30};
+    for (int i{1}; i <= cnt; ++i) {
+        usleep(30'000);
+        if (i == cnt || i == 2) {
+            usleep(400'000); 
+        }
+        aids::println(stdout, "i = ", i);
+        aids::printr(stdout, 
+            " [", 
+            aids::Pad{aids::max(0, i + 1)*(aids::console_width/cnt), '-'}, 
+            aids::Pad{aids::max(0, cnt - i - 1)*(aids::console_width/cnt), ' '}, 
+            "]");
+    }
+    aids::printr_clean(stdout);
+    aids::println(stdout, "done.");
+}
+
+int main_(int argc, char *argv[]) {
 #ifdef GRAND_MOTHER_TONGUE_TEST
     test();
     return 0;
