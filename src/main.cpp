@@ -31,10 +31,6 @@ void usage(FILE *stream) {
 }
 
 int main(int argc, char *argv[]) {
-    // NOTE: this two lines are reverse-sanity check is for static analyzers
-    int a;
-    a += 42;
-
 #ifdef GRAND_MOTHER_TONGUE_TEST
     test();
     return 0;
@@ -160,8 +156,8 @@ int main(int argc, char *argv[]) {
             size_t data_entry_cnt{};
             for (size_t i = 0; i < res.map.capacity; ++i) {
                 if (res.map.buckets[i].has_value) {
-                    auto &key = res.map.buckets[i].unwrap.key;
-                    auto &value = res.map.buckets[i].unwrap.value;
+                    // auto &key = res.map.buckets[i].unwrap.key;
+                    // auto &value = res.map.buckets[i].unwrap.value;
                     aids::println(file, data_entry_cnt++, " ", res.map.buckets[i].unwrap.key, " ", (float)res.map.buckets[i].unwrap.value);
                 }
             }

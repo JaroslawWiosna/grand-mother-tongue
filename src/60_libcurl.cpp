@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 
+#if 0
 namespace {
 std::size_t callback_(const char *in, std::size_t size, std::size_t num,
                      std::string *out) {
@@ -20,6 +21,7 @@ static size_t write_cb(char *data, size_t n, size_t l, void *userp) {
     (void)userp;
     return n * l;
 }
+#endif
 
 // LIBCURL_MULTIPLE
 
@@ -60,8 +62,8 @@ RestApiUrlResponses request(const RestApiUrlRequests requests) {
         responses.push_back(response);
     }
 
-    const int MAX_PARALLEL = (requests.size() < 8) ? requests.size() : 8;
-    const int NUM_URLS = requests.size();
+    const unsigned int MAX_PARALLEL = (requests.size() < 8) ? requests.size() : 8;
+    const unsigned int NUM_URLS = requests.size();
 
     CURLM *cm;
     CURLMsg *msg;
@@ -84,7 +86,7 @@ RestApiUrlResponses request(const RestApiUrlRequests requests) {
             if (msg->msg == CURLMSG_DONE) {
                 char *url;
                 CURL *e = msg->easy_handle;
-                int httpCode{};
+                // int httpCode{};
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &url);
                 curl_multi_remove_handle(cm, e);
                 curl_easy_cleanup(e);

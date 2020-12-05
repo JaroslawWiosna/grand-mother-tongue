@@ -1,0 +1,15 @@
+diff --git a/3rd_party/aids.hpp b/3rd_party/aids.hpp
+index d2529fb..29598f8 100644
+--- a/3rd_party/aids-patched.hpp
++++ b/3rd_party/aids-patched.hpp
+@@ -896,7 +896,9 @@ namespace aids
+ 
+     Utf8_Char code_to_utf8(uint32_t code)
+     {
+-        if (0x0000 <= code && code <= 0x007F) {
++        // previously `0x0000 <= code` which is always true.
++        // It was replaced with `true` just to suppress [-Wtype-limits]
++        if (true && code <= 0x007F) {
+             // 0xxxxxxx
+             // 1 byte
+             return Utf8_Char {
