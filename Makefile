@@ -12,6 +12,7 @@ src/version.cpp:
 	cp 3rd_party/aids.hpp 3rd_party/aids-patched.hpp
 	git apply 3rd_party/aids-*.patch
 
+#TODO(#38): Besides `-O0` Consider target `-O3`
 $(PROJECT_NAME): $(wildcard src/*.cpp) $(wildcard src/*.hpp) 3rd_party/aids-patched.hpp src/version.cpp
 	c++ src/main.cpp -std=c++17 -fno-exceptions -Wall -Wextra -pedantic -Wno-missing-braces -Wswitch-enum -O0 -fno-builtin -ggdb -lcurl -o $(PROJECT_NAME)
 
