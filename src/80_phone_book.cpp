@@ -446,7 +446,7 @@ void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
         }
         ++i;
     }
-    auto get_relation = [](size_t i){
+    auto get_relation = [](size_t i) -> void{
         const char *relation[] = {
             "",
             "Probant",
@@ -461,13 +461,48 @@ void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
         static_assert(8 == relation_size);
 
         if (i < relation_size) {
-            return relation[i];
+            aids::print(stdout, relation[i]);
         } else {
-            return "TODO(#35): get_relation(i) for i >= 8 is not implemented";
+            // 1000 -> drop first digit, then '0' is father, '1' is mother
+            int it{};
+            
+            char buf[64] = {'\0'};
+            int buf_size{};
+            while(i != 1) {
+                if (i % 2 == 0) {
+                    buf[it++] = 'f'; // father
+                } else {
+                    buf[it++] = 'm'; // mother
+                }
+                buf_size++;
+                i /= 2;
+            }
+            while (buf_size > 0) {
+                if (buf[buf_size-- - 1] == 'f') {
+                    aids::print(stdout, "father");
+                } else {
+                    aids::print(stdout, "mother");
+                }
+                if (buf_size != 0) {
+                    aids::print(stdout, "'s ");
+                } else {
+                    break;
+                }
+            }
         }
     };
 
+    auto print_ahnentafel_entry = [&at, &get_relation](int i){
+        assert(i > 0);
+        aids::print(stdout, i);
+        aids::print(stdout, ".\t");
+        get_relation(i);
+        aids::print(stdout, " ");
+        aids::print(stdout, at.data[i].value);
+        aids::print(stdout, '\n');
+    };
+
     for (size_t i{1}; i < at.size; ++i) {
-        aids::println(stdout, i, ".\t", get_relation(i), " ", at.data[i].value);
+        print_ahnentafel_entry(i);
     }
 }
