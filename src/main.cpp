@@ -123,6 +123,9 @@ int main(int argc, char *argv[]) {
     size_t current_gen{};
     constexpr const size_t GEN_LIMIT{1000};
     while (curl_calls_cnt < MAX_CURL_CALLS_TRESHOLD && current_gen < max_gen.value_or(GEN_LIMIT)) {
+        if (not ping("https://www.wikidata.org/w/api.php"_sv)) {
+            aids::panic("No Interget connection. Aborting...");
+        }
         curl_calls_cnt += phoneBook.find_parents_in_wikidata();
         curl_calls_cnt += phoneBook.find_names_in_wikidata();
         curl_calls_cnt += phoneBook.find_native_tongue_in_wikidata();
