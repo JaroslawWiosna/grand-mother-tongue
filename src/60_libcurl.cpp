@@ -5,8 +5,39 @@
 #include <memory>
 #include <iostream>
 
+// based on https://stackoverflow.com/a/10828221
+// and based on https://codereview.stackexchange.com/q/53938 
 bool ping(aids::String_View webpage) {
-    return true;
+    CURL *eh = curl_easy_init();
+    char buf[512] = {0};
+    aids::String_Buffer sbuffer = {sizeof(buf), buf, {}};
+    aids::sprint(&sbuffer, webpage);
+
+    curl_easy_setopt(eh, CURLOPT_URL, buf);
+    curl_easy_setopt(eh, CURLOPT_NOBODY, true);
+
+    // follow "Location: " redirects
+    curl_easy_setopt(eh, CURLOPT_FOLLOWLOCATION, true);
+
+    // // return the transfer as a string
+    // curl_easy_setopt(eh, CURLOPT_RETURNTRANSFER, 1);
+
+    // disable output verbose information
+    curl_easy_setopt(eh, CURLOPT_VERBOSE, false);
+
+    // max number of seconds to allow cURL function to execute
+    curl_easy_setopt(eh, CURLOPT_TIMEOUT, 5);
+    auto res = curl_easy_perform(eh);
+    (void)res;
+    int httpCode{};
+    curl_easy_getinfo(eh, CURLINFO_HTTP_CODE, &httpCode);
+    curl_easy_cleanup(eh);
+
+    if (httpCode >= 200 && httpCode < 300) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 #if 0
