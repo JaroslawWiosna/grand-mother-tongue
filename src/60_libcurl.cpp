@@ -5,6 +5,10 @@
 #include <memory>
 #include <iostream>
 
+bool ping(aids::String_View webpage) {
+    return true;
+}
+
 #if 0
 namespace {
 std::size_t callback_(const char *in, std::size_t size, std::size_t num,
