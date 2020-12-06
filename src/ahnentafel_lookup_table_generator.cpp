@@ -1,4 +1,4 @@
-//TODO: Consider moving `ahnentafel_lookup_table_generator` implementation to source code of `grand-mother-tongue`
+//TODO(#43): Consider moving `ahnentafel_lookup_table_generator` implementation to source code of `grand-mother-tongue`
 // I really like static const array of cstrings because there is no need of memory manage it.
 // I do realize that having a separate binary is an overkill, but I like compite time array, so I quite enjoy this.
 // This low-priority todo is a simply note for myself, that perhaps `get_relation` could be implemented cleaner.
