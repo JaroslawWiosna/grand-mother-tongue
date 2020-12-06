@@ -446,6 +446,7 @@ void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
         }
         ++i;
     }
+    //TODO(#41): Refactor `get_relation` to compile-time function
     auto get_relation = [](size_t i) -> void{
         const char *relation[] = {
             "",
