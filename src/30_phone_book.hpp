@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../3rd_party/aids-patched.hpp"
-
+#include "03_ahnentafel_lookup_table.hpp"
 struct PersonID;
 
 struct Blood {

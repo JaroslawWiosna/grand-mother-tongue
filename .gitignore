@@ -1,8 +1,10 @@
 grand-mother-tongue
 grand-mother-tongue-tests
+ahnentafel_lookup_table_generator
 
 3rd_party/aids-patched.hpp
 src/version.cpp
+src/03_ahnentafel_lookup_table.hpp
 
 dumped.txt
 data.dat

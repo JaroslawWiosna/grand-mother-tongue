@@ -446,58 +446,12 @@ void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
         }
         ++i;
     }
-    //TODO(#41): Refactor `get_relation` to compile-time function
-    auto get_relation = [](size_t i) -> void{
-        const char *relation[] = {
-            "",
-            "Probant",
-            "father",
-            "mother",
-            "paternal grandfather",
-            "paternal grandmother",
-            "maternal grandfather",
-            "maternal grandmother",
-        };
-        constexpr size_t relation_size = (sizeof(relation) / sizeof(relation[0]));
-        static_assert(8 == relation_size);
-
-        if (i < relation_size) {
-            aids::print(stdout, relation[i]);
-        } else {
-            // 1000 -> drop first digit, then '0' is father, '1' is mother
-            int it{};
-            
-            char buf[64] = {'\0'};
-            int buf_size{};
-            while(i != 1) {
-                if (i % 2 == 0) {
-                    buf[it++] = 'f'; // father
-                } else {
-                    buf[it++] = 'm'; // mother
-                }
-                buf_size++;
-                i /= 2;
-            }
-            while (buf_size > 0) {
-                if (buf[buf_size-- - 1] == 'f') {
-                    aids::print(stdout, "father");
-                } else {
-                    aids::print(stdout, "mother");
-                }
-                if (buf_size != 0) {
-                    aids::print(stdout, "'s ");
-                } else {
-                    break;
-                }
-            }
-        }
-    };
-
-    auto print_ahnentafel_entry = [&at, &get_relation](int i){
+    auto print_ahnentafel_entry = [&at](int i){
         assert(i > 0);
         aids::print(stdout, i);
         aids::print(stdout, ".\t");
-        get_relation(i);
+        assert((size_t)i < ahnentafel_lookup_table_size);
+        aids::print(stdout, ahnentafel_lookup_table[i]);
         aids::print(stdout, " ");
         aids::print(stdout, at.data[i].value);
         aids::print(stdout, '\n');
