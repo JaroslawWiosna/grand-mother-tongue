@@ -463,7 +463,32 @@ void PhoneBook::ahnentafel(PersonID id, size_t nr_generations) {
         if (i < relation_size) {
             aids::print(stdout, relation[i]);
         } else {
-            aids::print(stdout, "TODO(#35): get_relation(i) for i >= 8 is not implemented");
+            // 1000 -> drop first digit, then '0' is father, '1' is mother
+            int it{};
+            
+            char buf[64] = {'\0'};
+            int buf_size{};
+            while(i != 1) {
+                if (i % 2 == 0) {
+                    buf[it++] = 'f'; // father
+                } else {
+                    buf[it++] = 'm'; // mother
+                }
+                buf_size++;
+                i /= 2;
+            }
+            while (buf_size > 0) {
+                if (buf[buf_size-- - 1] == 'f') {
+                    aids::print(stdout, "father");
+                } else {
+                    aids::print(stdout, "mother");
+                }
+                if (buf_size != 0) {
+                    aids::print(stdout, "'s ");
+                } else {
+                    break;
+                }
+            }
         }
     };
 
