@@ -9,5 +9,7 @@ src/03_ahnentafel_lookup_table.hpp
 dumped.txt
 data.dat
 
+locale
+*.mo
 *.png
 

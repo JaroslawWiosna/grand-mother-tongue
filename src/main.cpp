@@ -1,5 +1,13 @@
 #include "../3rd_party/aids-patched.hpp"
 
+#include <libintl.h>
+#include <locale.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
+#define _(STRING) gettext(STRING)
+
 #include "version.cpp"
 #include "02_linear_alloc.hpp"
 #include "03_ahnentafel_lookup_table.hpp"
@@ -39,6 +47,16 @@ void usage(FILE *stream) {
 }
 
 int main(int argc, char *argv[]) {
+    setlocale(LC_ALL, "");
+    setlocale (LC_CTYPE, "");
+    setlocale (LC_MESSAGES, "");
+    bindtextdomain("grand-mother-tongue", "./locale");
+    textdomain("grand-mother-tongue");
+    printf("%s\n", _("This is test"));
+    printf("%s\n", _("This is the second test"));
+    printf("%s\n", _("This is the third test"));
+    printf("%s\n", _("Bye..."));
+    return 0;
 #ifdef GRAND_MOTHER_TONGUE_TEST
     test();
     return 0;
