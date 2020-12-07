@@ -4,6 +4,11 @@
 
 > Provides percentage composition of one's blood in terms of nationality/native language
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JaroslawWiosna/grand-mother-tongue/pics/grand-mother-400-400.png" />
+</p>
+
+
 Have you ever wonder how many languages does your blood speak?
 `grand-mother-tongue` can tell you, if only you know your *Wikidata item*.
 
