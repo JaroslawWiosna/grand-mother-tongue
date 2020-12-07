@@ -76,8 +76,6 @@ int main(int argc, char *argv[]) {
         }
         if (0 == strcmp("--blood-plot", it)
                 || 0 == strcmp("--blood_plot", it)) {
-            //TODO(#32): Unhardcode `--blood-plot` output file
-            //      The current output file is `output.png`
             blood_pie_chart_output_filepath = {true, cstr_as_string_view(args.shift())};
         }
         if (0 == strcmp("-g", it)
@@ -170,20 +168,19 @@ int main(int argc, char *argv[]) {
         FILE *gnuplot = popen("gnuplot -p", "w");
         // TODO(#33): bars in histogram are not labelled by value
         //       https://stackoverflow.com/questions/43715496/gnuplot-histogram-label-values
-        const   char* const gnuplot_cmds[] = {
-        "reset\n",
-        "set term png\n",
-        "set output 'output.png'\n",
-        "set boxwidth 0.5\n",
-        "set datafile separator whitespace\n", 
-        "set style fill solid\n",
-        "set zeroaxis\n",
-        "plot 'data.dat' using 1:3:xtic(2) with boxes\n"
-        };
-        const size_t gnuplot_cmds_cnt{8};
-        for (size_t i = 0; i < gnuplot_cmds_cnt; ++i) {
-            fprintf(gnuplot, "%s \n", gnuplot_cmds[i]);
-        }
+        const   char* const gnuplot_cmds = 
+        "reset\n"
+        "set term png\n"
+        "set output '%.*s'\n"
+        "set boxwidth 0.5\n"
+        "set datafile separator whitespace\n"
+        "set style fill solid\n"
+        "set zeroaxis\n"
+        "plot 'data.dat' using 1:3:xtic(2) with boxes\n";
+        fprintf(gnuplot, 
+                gnuplot_cmds, 
+                blood_pie_chart_output_filepath.unwrap.count, 
+                blood_pie_chart_output_filepath.unwrap.data);
         fflush(gnuplot);
         pclose(gnuplot);
     }
