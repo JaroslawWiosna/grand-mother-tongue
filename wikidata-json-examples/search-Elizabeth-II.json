@@ -1,0 +1,120 @@
+{
+  "searchinfo": {
+    "search": "Elizabeth II"
+  },
+  "search": [
+    {
+      "id": "Q9682",
+      "title": "Q9682",
+      "pageid": 11076,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q9682",
+      "concepturi": "http://www.wikidata.org/entity/Q9682",
+      "label": "Elizabeth II",
+      "description": "queen of the UK, Canada, Australia, and New Zealand, and head of the Commonwealth of Nations",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Elizabeth II"
+      }
+    },
+    {
+      "id": "Q402982",
+      "title": "Q402982",
+      "pageid": 382194,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q402982",
+      "concepturi": "http://www.wikidata.org/entity/Q402982",
+      "label": "Elizabeth II",
+      "description": "Wikimedia disambiguation page",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Elizabeth II"
+      }
+    },
+    {
+      "id": "Q47510655",
+      "title": "Q47510655",
+      "pageid": 48553878,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q47510655",
+      "concepturi": "http://www.wikidata.org/entity/Q47510655",
+      "label": "Elizabeth II",
+      "description": "painting by Bernard Safran",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Elizabeth II"
+      }
+    },
+    {
+      "id": "Q59570555",
+      "title": "Q59570555",
+      "pageid": 59466542,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q59570555",
+      "concepturi": "http://www.wikidata.org/entity/Q59570555",
+      "label": "Élizabeth II",
+      "description": "painting by Pamela Edwards",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Élizabeth II"
+      }
+    },
+    {
+      "id": "Q50897502",
+      "title": "Q50897502",
+      "pageid": 51825661,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q50897502",
+      "concepturi": "http://www.wikidata.org/entity/Q50897502",
+      "label": "Elizabeth II dining on board HMS Vanguard, 15 June 1953",
+      "description": "painting by John Thomas Young Gilroy",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Elizabeth II dining on board HMS Vanguard, 15 June 1953"
+      }
+    },
+    {
+      "id": "Q33102113",
+      "title": "Q33102113",
+      "pageid": 34563562,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q33102113",
+      "concepturi": "http://www.wikidata.org/entity/Q33102113",
+      "label": "Royal Cypher of Queen Elizabeth II",
+      "description": "Monogram representing Queen Elizabeth II of the United Kingdom",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "Elizabeth II's royal cypher"
+      },
+      "aliases": [
+        "Elizabeth II's royal cypher"
+      ]
+    },
+    {
+      "id": "Q58339659",
+      "title": "Q58339659",
+      "pageid": 58254026,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q58339659",
+      "concepturi": "http://www.wikidata.org/entity/Q58339659",
+      "label": "Equestrian statue of Elizabeth II",
+      "description": "equestrian statue of Elizabeth II in Windsor Great Park, Berkshire",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "Elizabeth II Golden Jubilee Statue"
+      },
+      "aliases": [
+        "Elizabeth II Golden Jubilee Statue"
+      ]
+    }
+  ],
+  "search-continue": 7,
+  "success": 1
+}
