@@ -5,14 +5,7 @@
 
 
 bool PhoneBook::contains(PersonID id) {
-    for (size_t i = 0; i < hashmap.capacity; ++i) {
-        if (hashmap.buckets[i].has_value) {
-            if (hashmap.buckets[i].unwrap.key == id) {
-                return true;
-            }
-        }
-    }
-    return false;
+    return hashmap.contains(id);
 }
 
 bool PhoneBook::contains(aids::Maybe<PersonID> id) {
