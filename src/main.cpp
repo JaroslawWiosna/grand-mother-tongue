@@ -3,6 +3,7 @@
 #include "version.cpp"
 #include "02_linear_alloc.hpp"
 #include "03_ahnentafel_lookup_table.hpp"
+#include "04_shared_ptr.hpp"
 #include "10_libcurl.hpp"
 #include "25_person.hpp"
 #include "29_libcurl_and_json.hpp"
