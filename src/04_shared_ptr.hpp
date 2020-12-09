@@ -10,8 +10,13 @@ struct Shared_ptr {
     T *ptr{nullptr};
     Control_block *cb{nullptr};
 
-    // https://stackoverflow.com/questions/49173654/why-deleted-copy-constructor-doesnt-let-to-use-other-constructor-with-polymorph
-    // Shared_ptr<T>(const Shared_ptr<T>&) = delete;
+    Shared_ptr<T>() = default;
+
+    Shared_ptr<T>(const Shared_ptr<T>& that) {
+        this->ptr = that.ptr;    
+        this->cb = that.cb;    
+        this->cb->ref_cnt += 1;
+    }
 
     ~Shared_ptr() {
         cb->ref_cnt -= 1;

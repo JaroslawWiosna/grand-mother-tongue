@@ -41,6 +41,15 @@ void test() {
         assert("+1399-07-17T00:00:00Z"_sv == result.unwrap);
     }
     {
+        auto foo = [](Shared_ptr<aids::Dynamic_Array<int>> sp) {
+            auto cnt = sp.use_count();
+            return cnt;
+        };
+        auto bar = [](Shared_ptr<aids::Dynamic_Array<int>> *sp) {
+            auto cnt = sp->use_count();
+            return cnt;
+        };
+        
         {
             aids::Dynamic_Array<int> da{};
             da.push(100);
@@ -59,6 +68,18 @@ void test() {
                 auto sp2 = copy_shared_ptr(sp1);
                 assert(2 == sp1.use_count());
                 assert(2 == sp2.use_count());
+                {
+                    auto use_cnt_inside_lambda_by_value = foo(sp1);
+                    assert((size_t)3 == use_cnt_inside_lambda_by_value);
+                    assert(2 == sp1.use_count());
+                    assert(2 == sp2.use_count());
+                }
+                {
+                    auto use_cnt_inside_lambda_by_ptr = bar(&sp1);
+                    assert((size_t)2 == use_cnt_inside_lambda_by_ptr);
+                    assert(2 == sp1.use_count());
+                    assert(2 == sp2.use_count());
+                }
                 sp1.get()->push(98);
                 sp2.get()->push(97);
                 assert(4 == sp1.get()->size);
