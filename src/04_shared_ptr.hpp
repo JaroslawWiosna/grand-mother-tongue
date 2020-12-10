@@ -18,6 +18,17 @@ struct Shared_ptr {
         this->cb->ref_cnt += 1;
     }
 
+    Shared_ptr& operator=(const Shared_ptr<T>& rhs) {
+        if (&rhs = this) {
+            return *this;
+        }
+        this->ptr = rhs.ptr;    
+        this->cb = rhs.cb;    
+        this->cb->ref_cnt += 1;
+
+        return *this;
+    }
+
     ~Shared_ptr() {
         cb->ref_cnt -= 1;
         if (cb->ref_cnt == 0) {

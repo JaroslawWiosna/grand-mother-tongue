@@ -86,6 +86,10 @@ void test() {
                 assert(4 == sp2.get()->size);
             }
             assert(1 == sp1.use_count());
+            auto sp3 = sp1;
+            assert(2 == sp1.use_count());
+            assert(2 == sp3.use_count());
+            
             assert(4 == da.size);
         }
         assert(0 == da.size);
