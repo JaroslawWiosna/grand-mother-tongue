@@ -1,4 +1,8 @@
-
+struct Foo {
+    int i{};
+    char c{};
+    Shared_ptr<aids::Dynamic_Array<char>> str{};
+};
 
 void test() {
     using aids::operator""_sv;
@@ -93,6 +97,19 @@ void test() {
             assert(4 == da.size);
         }
         assert(0 == da.size);
-    }    
+    }
+    {
+        {
+            aids::Dynamic_Array<char> da{};
+            da.push('1');
+        }
+        auto foo1 = Foo{};
+        auto *tmp = (aids::Dynamic_Array<char>*)malloc(sizeof(aids::Dynamic_Array<char>));
+        memset(tmp, '\0', sizeof(aids::Dynamic_Array<char>));
+        foo1.str = make_shared(tmp);
+        tmp->push('B');
+        foo1.str->push('A');
+        assert(2 == foo1.str->size);
+    }
     aids::println(stdout, "All good");
 }

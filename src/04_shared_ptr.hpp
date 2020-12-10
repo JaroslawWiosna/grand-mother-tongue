@@ -10,7 +10,11 @@ struct Shared_ptr {
     T *ptr{nullptr};
     Control_block *cb{nullptr};
 
-    Shared_ptr<T>() = default;
+    Shared_ptr<T>() {
+        this->cb = (Control_block*)malloc(sizeof(Control_block));
+        this->ptr = (T*)malloc(sizeof(T));
+        this->cb->ref_cnt = 1;
+    }
 
     Shared_ptr<T>(const Shared_ptr<T>& that) {
         this->ptr = that.ptr;    
@@ -19,7 +23,7 @@ struct Shared_ptr {
     }
 
     Shared_ptr& operator=(const Shared_ptr<T>& rhs) {
-        if (&rhs = this) {
+        if (&rhs == this) {
             return *this;
         }
         this->ptr = rhs.ptr;    
@@ -41,6 +45,14 @@ struct Shared_ptr {
     }
 
     T *get() {
+        return ptr;
+    }
+
+    T *operator*() {
+        return ptr;
+    }
+
+    T *operator->() {
         return ptr;
     }
 
