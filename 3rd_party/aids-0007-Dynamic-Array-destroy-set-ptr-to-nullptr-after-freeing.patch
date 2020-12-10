@@ -1,0 +1,23 @@
+diff --git a/3rd_party/aids.hpp b/3rd_party/aids.hpp
+index d2529fb..2eacac9 100644
+--- a/3rd_party/aids-patched.hpp
++++ b/3rd_party/aids-patched.hpp
+@@ -510,6 +510,18 @@ namespace aids
+     {
+         if (dynamic_array.data) {
+             free(dynamic_array.data);
++            dynamic_array.data = nullptr; // BUT this does not take any effect, since `dynamic_array` is copied by value
++            dynamic_array.size = 0;       // ditto
++        }
++    }
++
++    template <typename T>
++    void destroy(Dynamic_Array<T> *dynamic_array)
++    {
++        if (dynamic_array->data) {
++            free(dynamic_array->data);
++            dynamic_array->data = nullptr;
++            dynamic_array->size = 0;
+         }
+     }
+ 
