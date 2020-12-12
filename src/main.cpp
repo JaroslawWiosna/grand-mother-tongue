@@ -8,11 +8,14 @@
 #include "25_person.hpp"
 #include "29_libcurl_and_json.hpp"
 #include "30_phone_book.hpp"
+#include "41_subcmd.hpp"
+
 
 #include "60_libcurl.cpp"
 #include "75_person.cpp"
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
+#include "91_subcmd.cpp"
 #include "98_tests.cpp"
 
 #include <string>
@@ -46,6 +49,14 @@ int main(int argc, char *argv[]) {
     Maybe<String_View> blood_pie_chart_output_filepath{};
     Maybe<size_t> ahnentafel{};
     
+    // This is a hack for #48, 
+    // because we are slowly moving towards subcomands driven usage
+
+    if (0 == strcmp("search", argv[1])) {
+        assert(argc >= 3);
+        subcmd_search(argv[2]);
+    }
+
     Args args{argc, argv};
     while (not args.empty()) {
         auto it = args.shift();

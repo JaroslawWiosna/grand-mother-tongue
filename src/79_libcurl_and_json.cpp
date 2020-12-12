@@ -21,6 +21,10 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
         query = "claims.P570[0].mainsnak.datavalue.value.time"_sv;
     } else if ("name"_sv == property) {
         query = "search[0].label"_sv;
+    } else if ("1st_result_id"_sv == property) {
+        query = "search[0].id"_sv;
+    } else if ("1st_result_desc"_sv == property) {
+        query = "search[0].description"_sv;
     } else {
         aids::panic("Property `", property, "` not recognized");
     }        
@@ -48,6 +52,10 @@ aids::Maybe<aids::String_View> extract(aids::String_View content, aids::String_V
             char word_buf[512] = {0};
             aids::String_Buffer sbuffer = {sizeof(word_buf), word_buf, {}};
             aids::sprint(&sbuffer, word);
+
+            if (not wob) { 
+                wob = object;
+            };
 
             wobj = wob->start;
             while (wobj && 0 != strcmp(wobj->name->string, word_buf)) {
@@ -131,6 +139,24 @@ aids::Maybe<aids::String_View> extract_death_year(std::string content) {
     aids::String_Buffer sbuffer = {4096, buf, {}};
     aids::sprint(&sbuffer, content.c_str());
     return extract({strlen(buf), buf}, "P570"_sv);}
+
+aids::Maybe<aids::String_View> extract_1st_result_id(std::string content) {
+    using aids::operator""_sv;
+
+    char *buf = (char*)alloc(&region, 4096);
+    memset(buf, 0, 4096);
+    aids::String_Buffer sbuffer = {4096, buf, {}};
+    aids::sprint(&sbuffer, content.c_str());
+    return extract({strlen(buf), buf}, "1st_result_id"_sv);}
+
+aids::Maybe<aids::String_View> extract_1st_result_desc(std::string content) {
+    using aids::operator""_sv;
+
+    char *buf = (char*)alloc(&region, 4096);
+    memset(buf, 0, 4096);
+    aids::String_Buffer sbuffer = {4096, buf, {}};
+    aids::sprint(&sbuffer, content.c_str());
+    return extract({strlen(buf), buf}, "1st_result_desc"_sv);}
 
 aids::Maybe<aids::String_View> extract_name(std::string content) {
     using aids::operator""_sv;

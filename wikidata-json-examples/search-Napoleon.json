@@ -1,0 +1,114 @@
+{
+  "searchinfo": {
+    "search": "Napoleon"
+  },
+  "search": [
+    {
+      "id": "Q517",
+      "title": "Q517",
+      "pageid": 776,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q517",
+      "concepturi": "http://www.wikidata.org/entity/Q517",
+      "label": "Napoleon",
+      "description": "French general and emperor (1769-1821)",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q193415",
+      "title": "Q193415",
+      "pageid": 191460,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q193415",
+      "concepturi": "http://www.wikidata.org/entity/Q193415",
+      "label": "Napoleon",
+      "description": "Wikimedia disambiguation page",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q986312",
+      "title": "Q986312",
+      "pageid": 935951,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q986312",
+      "concepturi": "http://www.wikidata.org/entity/Q986312",
+      "label": "Napoleon",
+      "description": "city in and the county seat of Henry County, Ohio, United States",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q17522194",
+      "title": "Q17522194",
+      "pageid": 19110543,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q17522194",
+      "concepturi": "http://www.wikidata.org/entity/Q17522194",
+      "label": "Napoleon",
+      "description": "male given name",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q996166",
+      "title": "Q996166",
+      "pageid": 945726,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q996166",
+      "concepturi": "http://www.wikidata.org/entity/Q996166",
+      "label": "Napoleon",
+      "description": "city",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q958465",
+      "title": "Q958465",
+      "pageid": 908309,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q958465",
+      "concepturi": "http://www.wikidata.org/entity/Q958465",
+      "label": "Napoleon",
+      "description": "city in Lafayette County, Missouri, United States",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoleon"
+      }
+    },
+    {
+      "id": "Q1632158",
+      "title": "Q1632158",
+      "pageid": 1566537,
+      "repository": "wikidata",
+      "url": "//www.wikidata.org/wiki/Q1632158",
+      "concepturi": "http://www.wikidata.org/entity/Q1632158",
+      "label": "Napoléon",
+      "description": "1927 film by Abel Gance",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Napoléon"
+      }
+    }
+  ],
+  "search-continue": 7,
+  "success": 1
+}
