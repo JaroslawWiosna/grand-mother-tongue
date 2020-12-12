@@ -35,7 +35,7 @@ void usage(FILE *stream) {
     aids::println(stream);
     aids::println(stream, "subcommands: do [-i <WIKIDATA ITEM>] [-g N]");
     aids::println(stream, "             search <word>");
-    
+    aids::println(stream, "             search-and-do <word>");    
 }
 
 int main(int argc, char *argv[]) {
@@ -66,6 +66,8 @@ int main(int argc, char *argv[]) {
         // `args.shift()` is just to remove the `do` subcommand from being 
         // checked in while loop below
         args.shift();
+    } else if ((0 == strcmp("search-and-do", argv[1])) or (0 == strcmp("search_and_do", argv[1]))) {
+        aids::panic("TODO(#57): subcommand search-and-do is not implemented");
     } else {
         aids::println(stdout, "Subcommand `", argv[1], "` is not supported");
         usage(stdout);
