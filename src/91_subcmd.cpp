@@ -1,7 +1,7 @@
 #include "41_subcmd.hpp"
 
 // TODO(#51): subcmd_search does not support `multi-words search`
-// TODO: subcmd_search prints only the first result
+// TODO(#52): subcmd_search prints only the first result
 void subcmd_search(const char *input) {
     RestApiUrlRequests reqs{};
     std::string url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=";
