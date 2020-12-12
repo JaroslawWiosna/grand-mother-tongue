@@ -60,6 +60,8 @@ int main(int argc, char *argv[]) {
         assert(argc >= 3);
         subcmd_search(argv[2]);
     } else if ((0 == strcmp("do", argv[1]))) {
+        // TODO(#55): `do` is not a fortunate word for a subcommand
+
         // NOTE: This is haskish a little bit:
         // `args.shift()` is just to remove the `do` subcommand from being 
         // checked in while loop below
