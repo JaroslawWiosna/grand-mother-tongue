@@ -29,10 +29,13 @@ constexpr int MAX_CURL_CALLS_TRESHOLD = 2000;
 static int curl_calls_cnt{};
 
 void usage(FILE *stream) {
-    aids::println(stream, "usage: ./grand-mother-tongue [--version] [--help] [-i <WIKIDATA ITEM>] ");
-    aids::println(stream, "                             [-g N] [--db <path>] [--dump-db <path>]   ");
-    aids::println(stream, "                             [--blood-plot <path>] [-v]");
-    aids::println(stream, "                             [--ahnentafel N]");
+    aids::println(stream, "usage: ./grand-mother-tongue <subcommand> [--version] [--help] [-i <WIKIDATA ITEM>] ");
+    aids::println(stream, "                                          [-g N] [--db <path>] [--dump-db <path>]   ");
+    aids::println(stream, "                                          [--blood-plot <path>] [-v]");
+    aids::println(stream);
+    aids::println(stream, "subcommands: do [-i <WIKIDATA ITEM>] [-g N]");
+    aids::println(stream, "             search <word>");
+    
 }
 
 int main(int argc, char *argv[]) {
@@ -52,12 +55,21 @@ int main(int argc, char *argv[]) {
     // This is a hack for #48, 
     // because we are slowly moving towards subcomands driven usage
 
+    Args args{argc, argv};
     if (0 == strcmp("search", argv[1])) {
         assert(argc >= 3);
         subcmd_search(argv[2]);
+    } else if ((0 == strcmp("do", argv[1]))) {
+        // NOTE: This is haskish a little bit:
+        // `args.shift()` is just to remove the `do` subcommand from being 
+        // checked in while loop below
+        args.shift();
+    } else {
+        aids::println(stdout, "Subcommand `", argv[1], "` is not supported");
+        usage(stdout);
+        exit(1);
     }
 
-    Args args{argc, argv};
     while (not args.empty()) {
         auto it = args.shift();
         if (0 == strcmp("--version", it)) {

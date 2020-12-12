@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- (#48) Subcomand search that outputs Wikidata ID
+- (#48) Subcomand `search` that outputs Wikidata ID
+
+### Change
+- (#52) Subcommand `do` that executes the 'as of yet' program
+  - This change require to use subcommands:
+    - `do` or
+    - `search`
 
 ## [0.7.1] - 2020-12-07
 ### Fixed
