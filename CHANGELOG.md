@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2020-12-16
+### Fixed
+- (#59) Improve performance of `Hash_Map::contains(Key key)`
+
 ## [0.8.0] - 2020-12-12
 ### Added
 - (#48) Subcomand `search` that outputs Wikidata ID
