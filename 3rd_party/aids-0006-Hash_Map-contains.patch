@@ -2,19 +2,12 @@ diff --git a/3rd_party/aids.hpp b/3rd_party/aids.hpp
 index d2529fb..84d216d 100644
 --- a/3rd_party/aids-patched.hpp
 +++ b/3rd_party/aids-patched.hpp
-@@ -1103,6 +1103,17 @@ namespace aids
+@@ -1103,6 +1103,10 @@ namespace aids
              }
          }
  
 +        bool contains(Key key) {
-+            for (size_t i = 0; i < capacity; ++i) {
-+                if (buckets[i].has_value) {
-+                    if (buckets[i].unwrap.key == key) {
-+                        return true;
-+                    }
-+                }
-+            }
-+            return false;
++            return get(key).has_value;
 +        }
 +
          void insert(Key key, Value value)
