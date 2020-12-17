@@ -21,7 +21,7 @@
 //
 // ============================================================
 //
-// aids — 0.33.0 — std replacement for C++. Designed to aid developers
+// aids — 0.34.1 — std replacement for C++. Designed to aid developers
 // to a better programming experience.
 //
 // https://github.com/rexim/aids
@@ -30,6 +30,8 @@
 //
 // ChangeLog (https://semver.org/ is implied)
 //
+//   0.34.1 Fix -Wtype-limits warning in utf8_get_code()
+//   0.34.0 Hash_Map::contains(Key key)
 //   0.33.0 Maybe::value_or(T t)
 //   0.32.0 Hash_Map::operator[](Key key)
 //   0.31.0 String_View::has_suffix(String_View suffix)
@@ -924,7 +926,7 @@ namespace aids
 
     Utf8_Char code_to_utf8(uint32_t code)
     {
-        if (0x0000 <= code && code <= 0x007F) {
+        if (/*0x0000 <= code && */code <= 0x007F) {
             // 0xxxxxxx
             // 1 byte
             return Utf8_Char {
@@ -1163,6 +1165,10 @@ namespace aids
             } else {
                 return {};
             }
+        }
+
+        bool contains(Key key) {
+            return get(key).has_value;
         }
 
         Value *operator[](Key key)
