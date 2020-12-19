@@ -55,3 +55,20 @@ jobs:
           CC: clang
           CXX: clang++
           
+  build-freebsd:
+    runs-on: macos-latest
+    name: FreeBSD LLVM Clang build
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build on FreeBSD
+      id: build
+      uses: vmactions/freebsd-vm@v0.0.9
+      with:
+        usesh: true
+        prepare: pkg install -y git pkgconf ftp/curl
+        run: |
+          pkg-config --cflags --libs libcurl
+          pkg-config --cflags libcurl
+          pkg-config --libs libcurl
+          freebsd-version
+          make -B 
