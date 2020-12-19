@@ -67,10 +67,6 @@ jobs:
         usesh: true
         prepare: pkg install -y git pkgconf ftp/curl
         run: |
-          ls -l /usr/local/include
-          ls -l /usr/local/include | grep curl
-          ls -l /usr/local/lib
-          ls -l /usr/local/lib | grep curl
           pkg-config --cflags --libs libcurl
           pkg-config --cflags libcurl
           pkg-config --libs libcurl
