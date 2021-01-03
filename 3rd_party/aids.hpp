@@ -21,7 +21,7 @@
 //
 // ============================================================
 //
-// aids — 0.34.1 — std replacement for C++. Designed to aid developers
+// aids — 0.36.0 — std replacement for C++. Designed to aid developers
 // to a better programming experience.
 //
 // https://github.com/rexim/aids
@@ -30,6 +30,10 @@
 //
 // ChangeLog (https://semver.org/ is implied)
 //
+//   0.36.0 void destroy(String_View sv)
+//   0.35.1 Fix compilation when using todo() and unreachable()
+//   0.35.0 [[noreturn]] void unreachable(Args... args)
+//          [[noreturn]] void todo(Args... args)
 //   0.34.1 Fix -Wtype-limits warning in utf8_get_code()
 //   0.34.0 Hash_Map::contains(Key key)
 //   0.33.0 Maybe::value_or(T t)
@@ -102,6 +106,8 @@
 // Contributors:
 //   Alexey Kutepov (github:rexim)
 //   Aodhnait Étaín (github:aodhneine)
+//   Jarosław Wiosna (github:JaroslawWiosna)
+//   Danil Kolumbet (github:kolumb)
 
 #ifndef AIDS_HPP_
 #define AIDS_HPP_
@@ -486,6 +492,11 @@ namespace aids
         return {true, {static_cast<size_t>(size), static_cast<const char*>(data)}};
     }
 
+    void destroy(String_View sv)
+    {
+        free((void*) sv.data);
+    }
+
     ////////////////////////////////////////////////////////////
     // DYNAMIC ARRAY
     ////////////////////////////////////////////////////////////
@@ -847,12 +858,23 @@ namespace aids
         print1(stream, '\n');
     }
 
-
     template <typename... Args>
     [[noreturn]] void panic(Args... args)
     {
         println(stderr, args...);
         exit(1);
+    }
+
+    template <typename... Args>
+    [[noreturn]] void unreachable(Args... args)
+    {
+        panic("Unreachable: ", args...);
+    }
+
+    template <typename... Args>
+    [[noreturn]] void todo(Args... args)
+    {
+        panic("TODO: ", args...);
     }
 
     template <typename T, typename... Args>
@@ -1175,7 +1197,7 @@ namespace aids
         {
             {
                 Maybe<Value*> maybe_value = get(key);
-                if (not maybe_value.has_value) {
+                if (!maybe_value.has_value) {
                     insert(key, {});
                 } else {
                     return maybe_value.unwrap;
