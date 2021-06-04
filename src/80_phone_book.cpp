@@ -1,3 +1,5 @@
+#include "../3rd_party/aids-patched.hpp"
+
 #include "29_libcurl_and_json.hpp"
 #include "30_phone_book.hpp"
 

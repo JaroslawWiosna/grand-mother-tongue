@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../3rd_party/aids-patched.hpp"
+
 constexpr unsigned long long operator ""_Kb (unsigned long long s)
 {
     return s * 1024;
