@@ -3,6 +3,7 @@
 // I do realize that having a separate binary is an overkill, but I like compite time array, so I quite enjoy this.
 // This low-priority todo is a simply note for myself, that perhaps `get_relation` could be implemented cleaner.
 
+#define AIDS_IMPLEMENTATION
 #include "../3rd_party/aids-patched.hpp"
 
 using namespace aids;

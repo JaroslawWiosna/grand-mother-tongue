@@ -1,5 +1,3 @@
-#include "../3rd_party/aids-patched.hpp"
-
 #include "version.cpp"
 #include "02_linear_alloc.hpp"
 #include "03_ahnentafel_lookup_table.hpp"
@@ -10,13 +8,15 @@
 #include "30_phone_book.hpp"
 #include "41_subcmd.hpp"
 
-
 #include "60_libcurl.cpp"
 #include "75_person.cpp"
 #include "79_libcurl_and_json.cpp"
 #include "80_phone_book.cpp"
 #include "91_subcmd.cpp"
 #include "98_tests.cpp"
+
+#define AIDS_IMPLEMENTATION
+#include "../3rd_party/aids-patched.hpp"
 
 #include <string>
 
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
         "plot 'data.dat' using 1:3:xtic(2) with boxes\n";
         fprintf(gnuplot, 
                 gnuplot_cmds, 
-                blood_pie_chart_output_filepath.unwrap.count, 
+                (int) blood_pie_chart_output_filepath.unwrap.count, 
                 blood_pie_chart_output_filepath.unwrap.data);
         fflush(gnuplot);
         pclose(gnuplot);

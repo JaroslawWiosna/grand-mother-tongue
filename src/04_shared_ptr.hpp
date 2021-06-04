@@ -37,7 +37,6 @@ struct Shared_ptr {
         cb->ref_cnt -= 1;
         if (cb->ref_cnt == 0) {
             free(cb);
-            aids::destroy(ptr);
 
             cb = nullptr;
             ptr = nullptr;
