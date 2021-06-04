@@ -59,8 +59,6 @@ void test() {
             da.push(100);
             da.push(99);
             assert(2 == da.size);
-            aids::destroy(&da);
-            assert(0 == da.size);
         }
         aids::Dynamic_Array<int> da{};
         da.push(100);
