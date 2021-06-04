@@ -21,7 +21,7 @@
 //
 // ============================================================
 //
-// aids — 1.0.0 — std replacement for C++. Designed to aid developers
+// aids — 1.3.0 — std replacement for C++. Designed to aid developers
 // to a better programming experience.
 //
 // https://github.com/rexim/aids
@@ -30,6 +30,11 @@
 //
 // ChangeLog (https://semver.org/ is implied)
 //
+//   1.3.0  fix memory leak in read_file_as_string_view()
+//          add operator[] for Dynamic_Array
+//          add struct Newline for println system
+//   1.2.0  add String_View::as_cstr(Ator ator)
+//   1.1.0  add constexpr Maybe<T> some(T x)
 //   1.0.0  remove Stretchy_Buffer{}
 //          remove Args::pop()
 //   0.40.0 Fix MSVC warnings
@@ -301,6 +306,12 @@ namespace aids
         }
     };
 
+    template <typename T>
+    constexpr Maybe<T> some(T x)
+    {
+        return {true, x};
+    }
+
 #define unwrap_into(lvalue, maybe)              \
     do {                                        \
         auto maybe_var = (maybe);               \
@@ -427,7 +438,7 @@ namespace aids
                 result = result * (Integer) 0x10 + x;
             }
 
-            return {true, result};
+            return some(result);
         }
 
         template <typename Integer>
@@ -468,7 +479,7 @@ namespace aids
                 return {};
             }
 
-            return {true, result};
+            return some(result);
         }
 
 
@@ -528,6 +539,17 @@ namespace aids
             }
             return result;
         }
+
+        template <typename Ator = Mtor>
+        char *as_cstr(Ator *ator = &mtor)
+        {
+            char *result = ator->template alloc<char>(count + 1);
+            if (result != nullptr) {
+                memcpy(result, data, count);
+                result[count] = '\0';
+            }
+            return result;
+        }
     };
 
     String_View operator ""_sv(const char *data, size_t count)
@@ -566,9 +588,12 @@ namespace aids
         if (!data) return {};
 
         size_t read_size = fread(data, 1, size, f);
-        if (read_size != (size_t) size && ferror(f)) return {};
+        if (read_size != (size_t) size && ferror(f)) {
+            ator->template dealloc<char>(data, size);
+            return {};
+        }
 
-        return {true, {static_cast<size_t>(size), static_cast<const char*>(data)}};
+        return some(String_View {static_cast<size_t>(size), static_cast<const char*>(data)});
     }
 
     void destroy(String_View sv)
@@ -579,6 +604,9 @@ namespace aids
     ////////////////////////////////////////////////////////////
     // DYNAMIC ARRAY
     ////////////////////////////////////////////////////////////
+
+    template <typename... Args>
+    [[noreturn]] void panic(Args... args);
 
     template <typename T, typename Ator = Mtor>
     struct Dynamic_Array
@@ -627,6 +655,26 @@ namespace aids
             }
 
             return false;
+        }
+
+        T &operator[](size_t index)
+        {
+#ifndef AIDS_DISABLE_RANGE_CHECKS
+            if (index >= size) {
+                panic("Dynamic_Array: index out-of-bounds");
+            }
+#endif // AIDS_DISABLE_RANGE_CHECKS
+            return data[index];
+        }
+
+        const T &operator[](size_t index) const
+        {
+#ifndef AIDS_DISABLE_RANGE_CHECKS
+            if (index >= size) {
+                panic("Dynamic_Array: index out-of-bounds");
+            }
+#endif // AIDS_DISABLE_RANGE_CHECKS
+            return data[index];
         }
     };
 
@@ -1048,7 +1096,7 @@ namespace aids
             (*view.data & UTF8_1BYTE_MASK) == 0)
         {
             *size = 1;
-            return {true, static_cast<uint32_t>(*view.data)};
+            return some(static_cast<uint32_t>(*view.data));
         }
 
         if (view.count >= 2 &&
@@ -1058,7 +1106,7 @@ namespace aids
             *size = 2;
             const auto byte1 = static_cast<uint32_t>((view.data[0] & (UTF8_2BYTES_MASK - 1)) << 6);
             const auto byte2 = static_cast<uint32_t>(view.data[1] & (UTF8_EXTRA_BYTE_MASK - 1));
-            return {true, byte1 | byte2};
+            return some(byte1 | byte2);
         }
 
         if (view.count >= 3 &&
@@ -1070,7 +1118,7 @@ namespace aids
             const auto byte1 = static_cast<uint32_t>((view.data[0] & (UTF8_3BYTES_MASK - 1)) << (6 * 2));
             const auto byte2 = static_cast<uint32_t>((view.data[1] & (UTF8_EXTRA_BYTE_MASK - 1)) << 6);
             const auto byte3 = static_cast<uint32_t>(view.data[2] & (UTF8_EXTRA_BYTE_MASK - 1));
-            return {true, byte1 | byte2 | byte3};
+            return some(byte1 | byte2 | byte3);
         }
 
         if (view.count >= 4 &&
@@ -1084,7 +1132,7 @@ namespace aids
             const auto byte2 = static_cast<uint32_t>((view.data[1] & (UTF8_EXTRA_BYTE_MASK - 1)) << (6 * 2));
             const auto byte3 = static_cast<uint32_t>((view.data[2] & (UTF8_EXTRA_BYTE_MASK - 1)) << 6);
             const auto byte4 = static_cast<uint32_t>(view.data[3] & (UTF8_EXTRA_BYTE_MASK - 1));
-            return {true, byte1 | byte2 | byte3 | byte4};
+            return some(byte1 | byte2 | byte3 | byte4);
         }
 
         return {};
@@ -1134,6 +1182,13 @@ namespace aids
             print(stream, i == 0 ? "" : ", ", Hex<char> { hex_bytes.unwrap.data[i] });
         }
         print(stream, "]");
+    }
+
+    struct Newline {};
+    
+    void print1(FILE *stream, Newline)
+    {
+        print(stream, '\n');
     }
 
     ////////////////////////////////////////////////////////////
@@ -1223,7 +1278,7 @@ namespace aids
             }
 
             if (buckets && buckets[hk].has_value && buckets[hk].unwrap.key == key) {
-                return {true, &buckets[hk].unwrap.value};
+                return some(&buckets[hk].unwrap.value);
             } else {
                 return {};
             }
