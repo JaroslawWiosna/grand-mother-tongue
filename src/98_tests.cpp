@@ -94,7 +94,6 @@ void test() {
             
             assert(4 == da.size);
         }
-        assert(0 == da.size);
     }
     {
         {

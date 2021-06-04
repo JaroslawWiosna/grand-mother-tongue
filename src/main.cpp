@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
         "plot 'data.dat' using 1:3:xtic(2) with boxes\n";
         fprintf(gnuplot, 
                 gnuplot_cmds, 
-                blood_pie_chart_output_filepath.unwrap.count, 
+                (int) blood_pie_chart_output_filepath.unwrap.count, 
                 blood_pie_chart_output_filepath.unwrap.data);
         fflush(gnuplot);
         pclose(gnuplot);
